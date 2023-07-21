@@ -102,7 +102,6 @@
     "preinstall": "node -e 'process.exit(0)'",
     "prepack": "check-for-leaks",
     "prepare": "husky install",
-    "repl": "node ./script/start.js --interactive",
     "start": "node ./script/start.js",
     "test": "node ./script/spec-runner.js",
     "tsc": "tsc",

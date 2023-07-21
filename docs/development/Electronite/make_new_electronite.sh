@@ -17,6 +17,7 @@ OLD_ELECTRONITE_BRANCH=$2
 CREDS=$3
 
 # get files from previous version
+git fetch --all
 git checkout $OLD_ELECTRONITE_BRANCH
 git pull
 mkdir -p ./temp_files/Electronite
@@ -28,9 +29,9 @@ git fetch --force --tags upstream
 
 # push up the new electron tag
 if [ "${CREDS}" == "" ]; then
-  git push origin $NEW_ELECTRON_VERSION
+  git push --no-verify --tags origin $NEW_ELECTRON_VERSION
 else # use passed credentials
-  git push --tags https://${CREDS}@github.com/unfoldingWord/electronite.git $NEW_ELECTRON_VERSION
+  git push --no-verify --tags https://${CREDS}@github.com/unfoldingWord/electronite.git $NEW_ELECTRON_VERSION
 fi
 
 # get the source electron tag
@@ -39,9 +40,9 @@ git checkout $NEW_ELECTRON_VERSION
 git checkout -b ${NEW_ELECTRON_VERSION}-electron
 # push it up
 if [ "${CREDS}" == "" ]; then
-  git push origin ${NEW_ELECTRON_VERSION}-electron
+  git push --no-verify origin ${NEW_ELECTRON_VERSION}-electron
 else # use passed credentials
-  git push  https://${CREDS}@github.com/unfoldingWord/electronite.git
+  git push --no-verify  https://${CREDS}@github.com/unfoldingWord/electronite.git
 fi
 
 # create a new Electronite branch from electron sources
@@ -67,8 +68,8 @@ git add -f docs/development/Electronite/electron.d.ts
 rm electron.d.ts electron.d.ts.new
 
 if [ "${CREDS}" == "" ]; then
-  git push origin electronite-${NEW_ELECTRON_VERSION}-beta
+  git push --no-verify origin electronite-${NEW_ELECTRON_VERSION}-beta
 else # use passed credentials
-  git push  https://${CREDS}@github.com/unfoldingWord/electronite.git electronite-${NEW_ELECTRON_VERSION}-beta
+  git push --no-verify https://${CREDS}@github.com/unfoldingWord/electronite.git electronite-${NEW_ELECTRON_VERSION}-beta
 fi
 
