@@ -29,9 +29,9 @@ git fetch --force --tags upstream
 
 # push up the new electron tag
 if [ "${CREDS}" == "" ]; then
-  git push --no-verify --tags origin $NEW_ELECTRON_VERSION
+  git push --no-verify origin $NEW_ELECTRON_VERSION
 else # use passed credentials
-  git push --no-verify --tags https://${CREDS}@github.com/unfoldingWord/electronite.git $NEW_ELECTRON_VERSION
+  git push --no-verify https://${CREDS}@github.com/unfoldingWord/electronite.git $NEW_ELECTRON_VERSION
 fi
 
 # get the source electron tag
