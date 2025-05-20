@@ -10,7 +10,7 @@ set -e
 #
 # to troubleshoot build problems, do build logging by doing `export BUILD_EXTRAS=-vvvvv` before running
 #
-# Example `./build_target_mac.sh x64 results/mac/v25.3.2`
+# Example `./build_target_mac.sh x64 results/mac/v36.2.1`
 
 TARGET=$1
 DEST=$2

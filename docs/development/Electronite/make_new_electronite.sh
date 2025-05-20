@@ -7,10 +7,10 @@ set -x
 #    Then copy files from old electronite branch ($OLD_ELECTRONITE_BRANCH)
 #        and commit them in new electronite branch.
 #
-# Example `./make_new_electronite.sh v25.3.2 electronite-v23.3.10`
+# Example `./make_new_electronite.sh v36.2.1 electronite-v23.3.10`
 #
 # or with github token:
-#   `./make_new_electronite.sh v25.3.2 electronite-v23.3.10 <token>`
+#   `./make_new_electronite.sh v36.2.1 electronite-v23.3.10 <token>`
 
 NEW_ELECTRON_VERSION=$1
 OLD_ELECTRONITE_BRANCH=$2
@@ -67,6 +67,9 @@ cp electron.d.ts.new ./docs/development/Electronite/electron.d.ts
 git add -f docs/development/Electronite/electron.d.ts
 rm electron.d.ts electron.d.ts.new
 
+git commit --no-verify -m "Creating new electronite-${NEW_ELECTRON_VERSION}-beta"
+
+git push --no-verify origin electronite-v36.2.1-beta
 if [ "${CREDS}" == "" ]; then
   git push --no-verify origin electronite-${NEW_ELECTRON_VERSION}-beta
 else # use passed credentials
