@@ -1,0 +1,288 @@
+diff --git a/DEPS b/DEPS
+index 5047b6b16..3c928c079 100644
+--- a/DEPS
++++ b/DEPS
+@@ -11,12 +11,14 @@ vars = {
+     '0e5d146ba13101a1302d59ea6e6e0b3cace4ae38',
+ 
+   'pyyaml_version': '3.12',
++  'graphite_version': '92f59dcc52f73ce747f1cdc831579ed2546884aa',
+ 
+   'chromium_git': 'https://chromium.googlesource.com',
+   'electron_git': 'https://github.com/electron',
+   'nodejs_git': 'https://github.com/nodejs',
+   'yaml_git': 'https://github.com/yaml',
+   'squirrel_git': 'https://github.com/Squirrel',
++  'graphite_git': 'https://github.com/silnrsi',
+ 
+   # KEEP IN SYNC WITH utils.js FILE
+   'yarn_version': '1.15.2',
+@@ -32,6 +34,7 @@ vars = {
+   'checkout_node': True,
+   'checkout_nan': True,
+   'checkout_pgo_profiles': True,
++  'checkout_graphite': True,
+ 
+   # It's only needed to parse the native tests configurations.
+   'checkout_pyyaml': False,
+@@ -82,6 +85,10 @@ deps = {
+     'url': (Var("yaml_git")) + '/pyyaml.git@' + (Var("pyyaml_version")),
+     'condition': 'checkout_pyyaml and process_deps',
+   },
++  'src/third_party/graphite/graphite2': {
++    'url': (Var("graphite_git")) + '/graphite.git@' + (Var("graphite_version")),
++    'condition': 'checkout_graphite and process_deps',
++  },
+   'src/third_party/squirrel.mac': {
+     'url': Var("squirrel_git") + '/Squirrel.Mac.git@' + Var("squirrel.mac_version"),
+     'condition': 'process_deps',
+@@ -111,6 +118,16 @@ pre_deps_hooks = [
+       'src/electron/patches/config.json',
+     ],
+   },
++  {
++    'name': 'setup_graphite',
++    'condition': 'checkout_graphite and apply_patches and process_deps',
++    'pattern': 'src/electron',
++    'action': [
++      'python3',
++      '-c',
++      'import os; os.makedirs(os.path.join("src", "electron", "third_party", "graphite"));',
++    ],
++  },
+ ]
+ 
+ hooks = [
+diff --git a/patches/chromium/.patches b/patches/chromium/.patches
+index c7311e348..7f9c36e22 100644
+--- a/patches/chromium/.patches
++++ b/patches/chromium/.patches
+@@ -105,3 +105,4 @@ fix_non-client_mouse_tracking_and_message_bubbling_on_windows.patch
+ build_make_libcxx_abi_unstable_false_for_electron.patch
+ introduce_ozoneplatform_electron_can_call_x11_property.patch
+ make_gtk_getlibgtk_public.patch
++add_graphite.patch
+diff --git a/patches/chromium/add_graphite.patch b/patches/chromium/add_graphite.patch
+new file mode 100644
+index 000000000..33bc776bd
+--- /dev/null
++++ b/patches/chromium/add_graphite.patch
+@@ -0,0 +1,217 @@
++From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
++From: Joel <da1nerd@pm.me>
++Date: Tue, 23 Jul 2019 15:48:39 -0700
++Subject: [PATCH] adds graphite support for font rendering - patched for v17.3.1 though v18.2.1
++
++diff --git a/third_party/BUILD.gn b/third_party/BUILD.gn
++index a62632e2c3fcf..0a8714996d3b9 100644
++--- a/third_party/BUILD.gn
+++++ b/third_party/BUILD.gn
++@@ -4,6 +4,7 @@q
++ 
++ import("//build/config/freetype/freetype.gni")
++ import("//third_party/harfbuzz-ng/harfbuzz.gni")
+++import("//third_party/graphite/graphite.gni")
++ import("//third_party/libjpeg.gni")
++ 
++ assert(!is_ios, "This is not used on iOS, don't drag it in unintentionally")
++@@ -60,5 +61,8 @@ component("freetype_harfbuzz") {
++     public_configs += [ "//third_party/harfbuzz-ng:harfbuzz_from_pkgconfig" ]
++   } else {
++     public_deps += [ "//third_party/harfbuzz-ng:harfbuzz_source" ]
+++    if (use_graphite) {
+++      public_deps += [ "//third_party/graphite:graphite_source" ]
+++    }
++   }
++ }
++diff --git a/third_party/blink/renderer/platform/fonts/web_font_decoder.cc b/third_party/blink/renderer/platform/fonts/web_font_decoder.cc
++index 6e388c9135c64..e6eea739ac230 100644
++--- a/third_party/blink/renderer/platform/fonts/web_font_decoder.cc
+++++ b/third_party/blink/renderer/platform/fonts/web_font_decoder.cc
++@@ -95,6 +95,11 @@ ots::TableAction BlinkOTSContext::GetTableAction(uint32_t tag) {
++   const uint32_t kCblcTag = OTS_TAG('C', 'B', 'L', 'C');
++   const uint32_t kColrTag = OTS_TAG('C', 'O', 'L', 'R');
++   const uint32_t kCpalTag = OTS_TAG('C', 'P', 'A', 'L');
+++  const uint32_t kFeatTag = OTS_TAG('F', 'e', 'a', 't');
+++  const uint32_t kGlatTag = OTS_TAG('G', 'l', 'a', 't');
+++  const uint32_t kGlocTag = OTS_TAG('G', 'l', 'o', 'c');
+++  const uint32_t kSilfTag = OTS_TAG('S', 'i', 'l', 'f');
+++  const uint32_t kSillTag = OTS_TAG('S', 'i', 'l', 'l');
++   const uint32_t kCff2Tag = OTS_TAG('C', 'F', 'F', '2');
++   const uint32_t kSbixTag = OTS_TAG('s', 'b', 'i', 'x');
++ #if HB_VERSION_ATLEAST(1, 0, 0)
++@@ -121,6 +126,12 @@ ots::TableAction BlinkOTSContext::GetTableAction(uint32_t tag) {
++     // Windows Color Emoji Tables
++     case kColrTag:
++     case kCpalTag:
+++    // Graphite
+++    case kFeatTag:
+++    case kGlatTag:
+++    case kGlocTag:
+++    case kSilfTag:
+++    case kSillTag:
++     case kCff2Tag:
++     case kSbixTag:
++ #if HB_VERSION_ATLEAST(1, 0, 0)
++diff --git a/third_party/graphite/BUILD.gn b/third_party/graphite/BUILD.gn
++new file mode 100644
++index 0000000000000..75b8267c80910
++--- /dev/null
+++++ b/third_party/graphite/BUILD.gn
++@@ -0,0 +1,115 @@
+++
+++config("graphite_config") {
+++    include_dirs = [ "graphite2/include" ]
+++}
+++
+++config("graphite_build") {
+++    include_dirs = [ "graphite2/src" ]
+++    cflags = []
+++
+++    if (is_win) {
+++        defines = ["_SCL_SECURE_NO_WARNINGS",
+++                   "_CRT_SECURE_NO_WARNINGS",
+++                   "UNICODE",
+++                   "GRAPHITE2_STATIC"]
+++    } else {
+++        cflags += ["-Wall",  "-Wextra",  "-Wno-unknown-pragmas",
+++               "-Wendif-labels", "-Wshadow", "-Wctor-dtor-privacy",
+++               "-Wnon-virtual-dtor"]
+++
+++
+++#        if (is_clang) {
+++#            cflags += ["-Wimplicit-fallthrough", "-Wshorten-64-to-32"]
+++#        }
+++    }
+++}
+++
+++source_set("graphite_source") {
+++    visibility = [ "//third_party:freetype_harfbuzz" ]
+++
+++    sources = [
+++        "graphite2/src/direct_machine.cpp",
+++        "graphite2/src/gr_char_info.cpp",
+++        "graphite2/src/gr_face.cpp",
+++        "graphite2/src/gr_features.cpp",
+++        "graphite2/src/gr_font.cpp",
+++        "graphite2/src/gr_logging.cpp",
+++        "graphite2/src/gr_segment.cpp",
+++        "graphite2/src/gr_slot.cpp",
+++        "graphite2/src/json.cpp",
+++        "graphite2/src/CmapCache.cpp",
+++        "graphite2/src/Code.cpp",
+++        "graphite2/src/Collider.cpp",
+++        "graphite2/src/Decompressor.cpp",
+++        "graphite2/src/Face.cpp",
+++        "graphite2/src/FeatureMap.cpp",
+++        "graphite2/src/FileFace.cpp",
+++        "graphite2/src/Font.cpp",
+++        "graphite2/src/GlyphCache.cpp",
+++        "graphite2/src/GlyphFace.cpp",
+++        "graphite2/src/Intervals.cpp",
+++        "graphite2/src/Justifier.cpp",
+++        "graphite2/src/NameTable.cpp",
+++        "graphite2/src/Pass.cpp",
+++        "graphite2/src/Position.cpp",
+++        "graphite2/src/Segment.cpp",
+++        "graphite2/src/Silf.cpp",
+++        "graphite2/src/Slot.cpp",
+++        "graphite2/src/Sparse.cpp",
+++        "graphite2/src/TtfUtil.cpp",
+++        "graphite2/src/UtfCodec.cpp",
+++
+++        "graphite2/src/inc/bits.h",
+++        "graphite2/src/inc/debug.h",
+++        "graphite2/src/inc/json.h",
+++        "graphite2/src/inc/CharInfo.h",
+++        "graphite2/src/inc/CmapCache.h",
+++        "graphite2/src/inc/Code.h",
+++        "graphite2/src/inc/Collider.h",
+++        "graphite2/src/inc/Compression.h",
+++        "graphite2/src/inc/Decompressor.h",
+++        "graphite2/src/inc/Endian.h",
+++        "graphite2/src/inc/Error.h",
+++        "graphite2/src/inc/Face.h",
+++        "graphite2/src/inc/FeatureMap.h",
+++        "graphite2/src/inc/FeatureVal.h",
+++        "graphite2/src/inc/FileFace.h",
+++        "graphite2/src/inc/Font.h",
+++        "graphite2/src/inc/GlyphCache.h",
+++        "graphite2/src/inc/GlyphFace.h",
+++        "graphite2/src/inc/Intervals.h",
+++        "graphite2/src/inc/List.h",
+++        "graphite2/src/inc/locale2lcid.h",
+++        "graphite2/src/inc/Machine.h",
+++        "graphite2/src/inc/Main.h",
+++        "graphite2/src/inc/NameTable.h",
+++        "graphite2/src/inc/opcode_table.h",
+++        "graphite2/src/inc/opcodes.h",
+++        "graphite2/src/inc/Pass.h",
+++        "graphite2/src/inc/Position.h",
+++        "graphite2/src/inc/Rule.h",
+++        "graphite2/src/inc/Segment.h",
+++        "graphite2/src/inc/Silf.h",
+++        "graphite2/src/inc/Slot.h",
+++        "graphite2/src/inc/Sparse.h",
+++        "graphite2/src/inc/TtfTypes.h",
+++        "graphite2/src/inc/TtfUtil.h",
+++        "graphite2/src/inc/UtfCodec.h",
+++
+++        "graphite2/include/graphite2/Font.h",
+++        "graphite2/include/graphite2/Log.h",
+++        "graphite2/include/graphite2/Segment.h",
+++        "graphite2/include/graphite2/Types.h",
+++    ]
+++
+++    defines = [
+++        "GRAPHITE2_NTRACING",
+++        "GRAPHITE2_NSEGCACHE",
+++        "GRAPHITE2_NFILEFACE"
+++    ]
+++
+++    configs -= [ "//build/config/compiler:chromium_code" ]
+++    configs += [ "//build/config/compiler:no_chromium_code",
+++                 ":graphite_build" ]
+++    public_configs = [ ":graphite_config" ]
+++}
++diff --git a/third_party/graphite/graphite.gni b/third_party/graphite/graphite.gni
++new file mode 100644
++index 0000000000000..a053150ebfb47
++--- /dev/null
+++++ b/third_party/graphite/graphite.gni
++@@ -0,0 +1,4 @@
+++
+++declare_args() {
+++    use_graphite = true
+++}
++diff --git a/third_party/harfbuzz-ng/BUILD.gn b/third_party/harfbuzz-ng/BUILD.gn
++index be6f93b56915a..f175e50ff1447 100644
++--- a/third_party/harfbuzz-ng/BUILD.gn
+++++ b/third_party/harfbuzz-ng/BUILD.gn
++@@ -9,6 +9,7 @@ import("//build/config/freetype/freetype.gni")
++ import("//build/config/ui.gni")
++ import("//testing/libfuzzer/fuzzer_test.gni")
++ import("//third_party/harfbuzz-ng/harfbuzz.gni")
+++import("//third_party/graphite/graphite.gni")
++ 
++ if (use_system_harfbuzz) {
++   import("//build/config/linux/pkg_config.gni")
++@@ -393,6 +394,17 @@ if (use_system_harfbuzz) {
++       public += [ "src/src/hb-glib.h" ]
++       sources += [ "src/src/hb-glib.cc" ]
++     }
+++
+++    if (use_graphite) {
+++      configs += [ "//third_party/graphite:graphite_config" ]
+++      sources += [
+++        "src/src/hb-graphite2.cc",
+++        "src/src/hb-graphite2.h",
+++      ]
+++      defines += ["HAVE_GRAPHITE2",
+++                  "GRAPHITE2_STATIC"
+++                 ]
+++    }
++   }
++ }
++ 
++ 
+\ No newline at end of file

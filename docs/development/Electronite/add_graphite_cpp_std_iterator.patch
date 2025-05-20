@@ -1,0 +1,54 @@
+From 0000000000000000000000000000000000000000 Thu Nov 3 15:48:39 2022
+From: Bruce <bruce.mclean@unfoldingword.org>
+Date: Thu Nov 3 2022 15:48:39 -0700
+Subject: [PATCH] fix graphite2 sources to be compatible with latest C++ standards -- patched for v25.3.2
+
+diff --git a/third_party/graphite/graphite2/src/GlyphCache.cpp b/third_party/graphite/graphite2/src/GlyphCache.cpp
+index 282bdc18..336de3f1 100644
+--- a/third_party/graphite/graphite2/src/GlyphCache.cpp
++++ b/third_party/graphite/graphite2/src/GlyphCache.cpp
+@@ -44,12 +44,18 @@ namespace
+     // variable length structures.
+ 
+     template<typename W>
+-    class _glat_iterator : public std::iterator<std::input_iterator_tag, std::pair<sparse::key_type, sparse::mapped_type> >
++    class _glat_iterator
+     {
+         unsigned short  key() const             { return uint16(be::peek<W>(_e) + _n); }
+         unsigned int    run() const             { return be::peek<W>(_e+sizeof(W)); }
+         void            advance_entry()         { _n = 0; _e = _v; be::skip<W>(_v,2); }
+     public:
++        using iterator_category = std::input_iterator_tag;
++        using value_type = std::pair<sparse::key_type, sparse::mapped_type>;
++        using difference_type = std::pair<sparse::key_type, sparse::mapped_type>;
++        using pointer = std::pair<sparse::key_type, sparse::mapped_type>*;
++        using reference = std::pair<sparse::key_type, sparse::mapped_type>&;
++        
+         _glat_iterator(const void * glat=0) : _e(reinterpret_cast<const byte *>(glat)), _v(_e+2*sizeof(W)), _n(0) {}
+ 
+         _glat_iterator<W> & operator ++ () {
+diff --git a/third_party/graphite/graphite2/src/Pass.cpp b/third_party/graphite/graphite2/src/Pass.cpp
+index db31c22d..c744bcbc 100644
+--- a/third_party/graphite/graphite2/src/Pass.cpp
++++ b/third_party/graphite/graphite2/src/Pass.cpp
+@@ -194,7 +194,7 @@ bool Pass::readPass(const byte * const pass_start, size_t pass_length, size_t su
+         m_cPConstraint = vm::Machine::Code(true, pcCode, pcCode + pass_constraint_len,
+                                   precontext[0], be::peek<uint16>(sort_keys), *m_silf, face, PASS_TYPE_UNKNOWN);
+         if (e.test(!m_cPConstraint, E_OUTOFMEM)
+-                || e.test(m_cPConstraint.status() != Code::loaded, m_cPConstraint.status() + E_CODEFAILURE))
++                || e.test(m_cPConstraint.status() != Code::loaded, m_cPConstraint.status() + static_cast<int> (E_CODEFAILURE)))
+             return face.error(e);
+         face.error_context(face.error_context() - 1);
+     }
+@@ -266,8 +266,8 @@ bool Pass::readRules(const byte * rule_map, const size_t num_entries,
+         r->constraint = new (m_codes+n*2-1) vm::Machine::Code(true,  rc_begin, rc_end, r->preContext, r->sort, *m_silf, face, pt, &prog_pool_free);
+ 
+         if (e.test(!r->action || !r->constraint, E_OUTOFMEM)
+-                || e.test(r->action->status() != Code::loaded, r->action->status() + E_CODEFAILURE)
+-                || e.test(r->constraint->status() != Code::loaded, r->constraint->status() + E_CODEFAILURE)
++                || e.test(r->action->status() != Code::loaded, r->action->status() + static_cast<int> (E_CODEFAILURE))
++                || e.test(r->constraint->status() != Code::loaded, r->constraint->status() + static_cast<int> (E_CODEFAILURE))
+                 || e.test(!r->constraint->immutable(), E_MUTABLECCODE))
+             return face.error(e);
+     }
+
