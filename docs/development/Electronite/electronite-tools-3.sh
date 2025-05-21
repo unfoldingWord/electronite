@@ -75,15 +75,17 @@ if [ "$COMMAND" == "get" ]; then
   git describe --tags
   cd ../..
   
-  # save in case graphite patch fails
-  export DATE=`date`
-  echo "$DATE" > "./end_time_$1_$2_$DATE.txt"
+  if [ -f ./src/electron/docs/development/Electronite/add_graphite_cpp_std_iterator.patch ]; then
+    # save in case graphite patch fails
+    export DATE=`date`
+    echo "$DATE" > "./end_time_$1_$2_$DATE.txt"
 
-  echo "Applying graphite patches"
-  cd ./src
-  git apply --whitespace=warn ./electron/docs/development/Electronite/add_graphite_cpp_std_iterator.patch
-  cd ..
-  
+    echo "Applying graphite patches"
+    cd ./src
+    git apply --whitespace=warn ./electron/docs/development/Electronite/add_graphite_cpp_std_iterator.patch
+    cd ..
+  fi
+
   export DATE=`date`
   echo "$DATE" > "./end_time_$1_$2_$DATE.txt"
   exit 0
