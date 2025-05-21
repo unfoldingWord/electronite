@@ -86,13 +86,15 @@ call git status
 call git describe --tags
 cd ..\..
 
-rem save in case graphite patch fails
-echo "%date% - %time%" > end_time_%COMMAND%_%TARGET%_%PASS%.txt
-
-echo Applying graphite patches
-cd .\src
-call git apply --whitespace=warn .\electron\docs\development\Electronite\add_graphite_cpp_std_iterator.patch
-cd ..
+if exist .\electron\docs\development\Electronite\add_graphite_cpp_std_iterator.patch (
+    rem save in case graphite patch fails
+    echo "%date% - %time%" > end_time_%COMMAND%_%TARGET%_%PASS%.txt
+    
+    echo Applying graphite patches
+    cd .\src
+    call git apply --whitespace=warn .\electron\docs\development\Electronite\add_graphite_cpp_std_iterator.patch
+    cd ..
+)
 
 goto End
 
