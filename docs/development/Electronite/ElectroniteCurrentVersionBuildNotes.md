@@ -57,9 +57,9 @@ sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
 
 Check out this [Electronite playlist](https://www.youtube.com/playlist?list=PLf7IRQ2kP73kmC8y8gLQoHs4I26LzrRrq) on YouTube if you need some help using the scripts.
 
-# Testing
+# Testing Graphite support in the Electronite build
 
-Once you have a compiled Electronite binary you can test it by visiting this page https://scripts.sil.org/cms/scripts/page.php?site_id=projects&item_id=graphite_fontdemo.
+Once you have a compiled Electronite binary you can test it by visiting this page https://graphite.sil.org/graphite_fontdemo.html. Do this by:
 
 * Run Electronite
 * Open the developer console in the running Electronite instance.
@@ -82,4 +82,4 @@ On the test page mentioned above, the padauk font uses a Mozilla specific css fl
 }
 ```
 
-See [this issue](https://github.com/unfoldingWord/translationCore/issues/6879#issuecomment-624429380) for a detailed explaination.
+See [this issue](https://github.com/unfoldingWord/translationCore/issues/6879#issuecomment-624429380) for a detailed explanation.

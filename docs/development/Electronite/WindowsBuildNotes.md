@@ -49,9 +49,9 @@ set Path=%cd%\depot_tools;%Path%
 ```
 
 - Test the build.
-    - Open electron.exe in finder, or run `electron.exe "https://scripts.sil.org/cms/scripts/page.php?site_id=projects&item_id=graphite_fontdemo"`.
+    - Open electron.exe in finder, or run `electron.exe "https://graphite.sil.org/graphite_fontdemo.html"`.
     - Open the developer console by typing`Control-Shift-I`.
-    - if it didn't open to test page, then in console execute `window.location="https://scripts.sil.org/cms/scripts/page.php?site_id=projects&item_id=graphite_fontdemo"`
+    - if it didn't open to test page, then in console execute `window.location="https://graphite.sil.org/graphite_fontdemo.html"`
     - Ensure all the tests pass by visually inspecting the rendered fonts and comparing against the image samples on the site.
     - The example for Padauk from server will not be correct with the triangles.  So need to:
       Open elements tab, select body of html, do Control-F to search, and search for `padauk_ttf`, and apply attribute `font-feature-settings: "wtri" 1;`.  The triangles should now be rendered correctly.
