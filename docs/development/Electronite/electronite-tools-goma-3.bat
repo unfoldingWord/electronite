@@ -17,7 +17,7 @@ set working_dir=%cd%
 set GIT_CACHE_PATH=%working_dir%\git_cache
 mkdir %GIT_CACHE_PATH%
 set COMMAND=%1
-set TARGET=%2
+set TARGET_=%2
 rem Count in roman numerals
 set PASS=%PASS%I
 
@@ -31,7 +31,7 @@ echo "GIT_CACHE_PATH=%GIT_CACHE_PATH%"
 echo "SCCACHE_BUCKET=%SCCACHE_BUCKET%"
 echo "working_dir=%working_dir%"
 
-echo "%date% - %time%" > start_time_%COMMAND%_%TARGET%_%PASS%.txt
+echo "%date% - %time%" > start_time_%COMMAND%_%TARGET_%_%PASS%.txt
 
 if %GOMA%.==. (
   set GOMA=none
@@ -110,7 +110,7 @@ rem pause
 cd ..\..
 
 rem save in case graphite patch fails
-echo "%date% - %time%" > end_time_%COMMAND%_%TARGET%_%PASS%.txt
+echo "%date% - %time%" > end_time_%COMMAND%_%TARGET_%_%PASS%.txt
 
 echo "Applying graphite patches"
 cd .\src
@@ -123,21 +123,21 @@ goto End
 rem ####################
 rem build release
 rem ####################
-if NOT %TARGET%.==. (
-    echo "Building for %TARGET%"
+if NOT %TARGET_%.==. (
+    echo "Building for %TARGET_%"
 ) else (
     echo "Building for default x64"
-    set TARGET=x64
+    set TARGET_=x64
 )
 
 echo "Building..."
 
-set CONFIG_FILE=%HOMEDRIVE%%HOMEPATH%\.electron_build_tools\configs\evm.%TARGET%.json
-set RELEASE_TARGET="-%TARGET%"
-call e init --root=. -o %TARGET% %TARGET% -i release --goma %GOMA% --fork %FORK% --use-https -f
+set CONFIG_FILE=%HOMEDRIVE%%HOMEPATH%\.electron_build_tools\configs\evm.%TARGET_%.json
+set RELEASE_TARGET="-%TARGET_%"
+call e init --root=. -o %TARGET_% %TARGET_% -i release --goma %GOMA% --fork %FORK% --use-https -f
 
 rem add target architecture to config
-call sed -i.orig "s|release.gn\\\x22)\x22|release.gn\\\x22)\x22, \x22target_cpu = \\\x22%TARGET%\\\x22\x22|g" "%CONFIG_FILE%"
+call sed -i.orig "s|release.gn\\\x22)\x22|release.gn\\\x22)\x22, \x22target_cpu = \\\x22%TARGET_%\\\x22\x22|g" "%CONFIG_FILE%"
 
 rem pause
 
@@ -150,20 +150,20 @@ goto End
 rem ####################
 rem create distributable
 rem ####################
-if NOT %TARGET%.==. (
-    echo "Building for %TARGET%"
+if NOT %TARGET_%.==. (
+    echo "Building for %TARGET_%"
 ) else (
     echo "Building for default x64"
-    set TARGET=x64
+    set TARGET_=x64
 )
 
 echo "Making release"
 
-set CONFIG_FILE=%HOMEDRIVE%%HOMEPATH%\.electron_build_tools\configs\evm.%TARGET%.json
-set RELEASE_TARGET="-%TARGET%"
-call e init --root=. -o %TARGET% %TARGET% -i release --goma %GOMA% --fork %FORK% --use-https -f
+set CONFIG_FILE=%HOMEDRIVE%%HOMEPATH%\.electron_build_tools\configs\evm.%TARGET_%.json
+set RELEASE_TARGET="-%TARGET_%"
+call e init --root=. -o %TARGET_% %TARGET_% -i release --goma %GOMA% --fork %FORK% --use-https -f
 rem add target architecture to config
-call sed -i.orig "s|release.gn\\\x22)\x22|release.gn\\\x22)\x22, \x22target_cpu = \\\x22%TARGET%\\\x22\x22|g" "%CONFIG_FILE%"
+call sed -i.orig "s|release.gn\\\x22)\x22|release.gn\\\x22)\x22, \x22target_cpu = \\\x22%TARGET_%\\\x22\x22|g" "%CONFIG_FILE%"
 
 echo "Creating Electronite Distributable..."
 call e build electron:dist
@@ -198,4 +198,4 @@ rem ####################
 
 cd %working_dir%
 
-echo "%date% - %time%" > end_time_%COMMAND%_%TARGET%_%PASS%.txt
+echo "%date% - %time%" > end_time_%COMMAND%_%TARGET_%_%PASS%.txt

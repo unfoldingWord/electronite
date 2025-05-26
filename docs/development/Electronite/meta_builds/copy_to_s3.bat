@@ -24,13 +24,13 @@ if NOT %ACCESS_KEY%. == . (
   set AWS_SECRET_ACCESS_KEY=%ACCESS_KEY%
 )
 
-set TARGET=win
+set TARGET_=win
 
 rem do the s3 copy commands and then exit bash
 rem presumes to current folder is the build folder
-aws s3 cp results\%TARGET%\%VERSION%\arm64\dist.zip s3://electronite-build-data/Electronite/%TARGET%/%VERSION%/arm64/dist.zip
-aws s3 cp results\%TARGET%\%VERSION%\x86\dist.zip s3://electronite-build-data/Electronite/%TARGET%/%VERSION%/x86/dist.zip
-aws s3 cp results\%TARGET%\%VERSION%\x64\dist.zip s3://electronite-build-data/Electronite/%TARGET%/%VERSION%/x64/dist.zip
+aws s3 cp results\%TARGET_%\%VERSION%\arm64\dist.zip s3://electronite-build-data/Electronite/%TARGET_%/%VERSION%/arm64/dist.zip
+aws s3 cp results\%TARGET_%\%VERSION%\x86\dist.zip s3://electronite-build-data/Electronite/%TARGET_%/%VERSION%/x86/dist.zip
+aws s3 cp results\%TARGET_%\%VERSION%\x64\dist.zip s3://electronite-build-data/Electronite/%TARGET_%/%VERSION%/x64/dist.zip
 
 if NOT %KEY_ID%. == . (
   echo "Clearing temp AWS_ACCESS_KEY_ID"

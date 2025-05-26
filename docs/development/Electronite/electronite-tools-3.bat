@@ -17,7 +17,7 @@ set working_dir=%cd%
 set GIT_CACHE_PATH=%working_dir%\git_cache
 mkdir %GIT_CACHE_PATH%
 set COMMAND=%1
-set TARGET=%2
+set TARGET_=%2
 rem Count in roman numerals
 set PASS=%PASS%I
 
@@ -31,7 +31,7 @@ echo "GIT_CACHE_PATH=%GIT_CACHE_PATH%"
 echo "SCCACHE_BUCKET=%SCCACHE_BUCKET%"
 echo "working_dir=%working_dir%"
 
-echo "%date% - %time%" > start_time_%COMMAND%_%TARGET%_%PASS%.txt
+echo "%date% - %time%" > start_time_%COMMAND%_%TARGET_%_%PASS%.txt
 
 
 rem ------------------------
@@ -88,7 +88,7 @@ cd ..\..
 
 if exist .\electron\docs\development\Electronite\add_graphite_cpp_std_iterator.patch (
     rem save in case graphite patch fails
-    echo "%date% - %time%" > end_time_%COMMAND%_%TARGET%_%PASS%.txt
+    echo "%date% - %time%" > end_time_%COMMAND%_%TARGET_%_%PASS%.txt
     
     echo Applying graphite patches
     cd .\src
@@ -171,4 +171,4 @@ rem ####################
 
 cd %working_dir%
 
-echo "%date% - %time%" > end_time_%COMMAND%_%TARGET%_%PASS%.txt
+echo "%date% - %time%" > end_time_%COMMAND%_%TARGET_%_%PASS%.txt

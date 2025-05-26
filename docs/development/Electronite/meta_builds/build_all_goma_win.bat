@@ -22,52 +22,52 @@ if not exist src (
     call electronite-tools-goma-3.bat get %BRANCH%
 )
 
-set TARGET=x64
-set DEST_FILE=%DEST%\%TARGET%\dist.zip
+set TARGET_=x64
+set DEST_FILE=%DEST%\%TARGET_%\dist.zip
 if exist %DEST_FILE% (
-    echo "Build %TARGET% already exists: %DEST_FILE%"
+    echo "Build %TARGET_% already exists: %DEST_FILE%"
 ) else (
-    echo "Doing Build %TARGET%"
-    call build_target_goma_win.bat %TARGET% %DEST%
+    echo "Doing Build %TARGET_%"
+    call build_target_goma_win.bat %TARGET_% %DEST%
 )
 
 if exist %DEST_FILE% (
-    echo "Distribution %TARGET% built: %DEST_FILE%"
+    echo "Distribution %TARGET_% built: %DEST_FILE%"
 ) else (
-    echo "Distribution %TARGET% failed: %DEST_FILE%"
+    echo "Distribution %TARGET_% failed: %DEST_FILE%"
     exit /b 10
 )
 
-set TARGET=x86
-set DEST_FILE=%DEST%\%TARGET%\dist.zip
+set TARGET_=x86
+set DEST_FILE=%DEST%\%TARGET_%\dist.zip
 
 if exist %DEST_FILE% (
-    echo "Build %TARGET% already exists: %DEST_FILE%"
+    echo "Build %TARGET_% already exists: %DEST_FILE%"
 ) else (
-    echo "Doing Build %TARGET%"
-    call build_target_goma_win.bat %TARGET% %DEST%
+    echo "Doing Build %TARGET_%"
+    call build_target_goma_win.bat %TARGET_% %DEST%
 )
 
 if exist %DEST_FILE% (
-    echo "Distribution %TARGET% built: %DEST_FILE%"
+    echo "Distribution %TARGET_% built: %DEST_FILE%"
 ) else (
-    echo "Distribution %TARGET% failed: %DEST_FILE%"
+    echo "Distribution %TARGET_% failed: %DEST_FILE%"
     exit /b 10
 )
 
-set TARGET=arm64
-set DEST_FILE=%DEST%\%TARGET%\dist.zip
+set TARGET_=arm64
+set DEST_FILE=%DEST%\%TARGET_%\dist.zip
 if exist %DEST_FILE% (
-    echo "Build %TARGET% already exists: %DEST_FILE%"
+    echo "Build %TARGET_% already exists: %DEST_FILE%"
 ) else (
-    echo "Doing Build %TARGET%"
-    call build_target_goma_win.bat %TARGET% %DEST%
+    echo "Doing Build %TARGET_%"
+    call build_target_goma_win.bat %TARGET_% %DEST%
 )
 
 if exist %DEST_FILE% (
-    echo "Distribution %TARGET% built: %DEST_FILE%"
+    echo "Distribution %TARGET_% built: %DEST_FILE%"
 ) else (
-    echo "Distribution %TARGET% failed: %DEST_FILE%"
+    echo "Distribution %TARGET_% failed: %DEST_FILE%"
     exit /b 10
 )
 

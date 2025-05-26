@@ -1,7 +1,7 @@
-set TARGET=%1
+set TARGET_=%1
 set DEST=%2
 
-rem Build script to do build build and release for %TARGET% if not present at %DEST%
+rem Build script to do build build and release for %TARGET_% if not present at %DEST%
 rem
 rem Uses Electronite build tools.
 rem
@@ -14,15 +14,15 @@ rem to troubleshoot build problems, do build logging by doing `set BUILD_EXTRAS=
 rem
 rem Example `build_target_goma_win.bat x64 results\win\v36.2.1`
 
-echo "Building %TARGET% to: %DEST%"
+echo "Building %TARGET_% to: %DEST%"
 
-set BUILD_TARGET=.\src\out\%TARGET%\electron.exe
+set BUILD_TARGET=.\src\out\%TARGET_%\electron.exe
 if exist %BUILD_TARGET% (
     echo "Build Target already exists: %BUILD_TARGET%"
 ) else (
-    echo "Doing Build %TARGET%"
-    call .\electronite-tools-goma-3.bat build %TARGET%
-    echo "Finish Build %TARGET%"
+    echo "Doing Build %TARGET_%"
+    call .\electronite-tools-goma-3.bat build %TARGET_%
+    echo "Finish Build %TARGET_%"
 )
 
 if exist %BUILD_TARGET% (
@@ -32,12 +32,12 @@ if exist %BUILD_TARGET% (
     exit /b 10
 )
 
-set RELEASE_TARGET=.\src\out\%TARGET%\dist.zip
+set RELEASE_TARGET=.\src\out\%TARGET_%\dist.zip
 if exist %RELEASE_TARGET% (
     echo "Release Target already exists: %RELEASE_TARGET%"
 ) else (
     echo "Doing Release %RELEASE_TARGET%"
-    call .\electronite-tools-goma-3.bat release %TARGET%
+    call .\electronite-tools-goma-3.bat release %TARGET_%
     echo "Finished Release %RELEASE_TARGET%"
 )
 
@@ -48,7 +48,7 @@ if exist %RELEASE_TARGET% (
     exit /b 10
 )
 
-set DEST_FOLDER=%DEST%\%TARGET%
+set DEST_FOLDER=%DEST%\%TARGET_%
 if not exist %DEST_FOLDER% (
     echo "Creating Destination folder: %DEST_FOLDER%"
     md "%DEST_FOLDER%"
@@ -67,7 +67,7 @@ if not exist %DEST_FILE% (
     exit /b 10
 )
 
-set TARGET_FOLDER=.\src\out\%TARGET%
+set TARGET_FOLDER=.\src\out\%TARGET_%
 echo "Remove %TARGET_FOLDER% to free up space for later builds'
 rmdir /s /q %TARGET_FOLDER%
 if exist %TARGET_FOLDER% (
