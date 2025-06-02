@@ -23,36 +23,23 @@ if [ ! -d src ]; then
     ./electronite-tools-3.sh get $BRANCH
 fi
 
-TARGET=x64
-DEST_FILE=$DEST/$TARGET/dist.zip
-if [ -f $DEST_FILE ]; then
-    echo "Build $TARGET already exists: $DEST_FILE"
-else
-    echo "Doing Build $TARGET"
-    ./build_target_mac.sh $TARGET $DEST
-fi
+TARGETS=("x64" "arm64")
 
-if [ -f $DEST_FILE ]; then
-    echo "Distribution $TARGET built: $DEST_FILE"
-else
-    echo "Distribution $TARGET failed: $DEST_FILE"
-    exit 10
-fi
+for TARGET in "${TARGETS[@]}"; do
+    DEST_FILE=$DEST/$TARGET/dist.zip
+    if [ -f $DEST_FILE ]; then
+        echo "Build $TARGET already exists: $DEST_FILE"
+    else
+        echo "Doing Build $TARGET"
+        ./build_target_mac.sh $TARGET $DEST
+    fi
 
-TARGET=arm64
-DEST_FILE=$DEST/$TARGET/dist.zip
-if [ -f $DEST_FILE ]; then
-    echo "Build $TARGET already exists: $DEST_FILE"
-else
-    echo "Doing Build $TARGET"
-    ./build_target_mac.sh $TARGET $DEST
-fi
-
-if [ -f $DEST_FILE ]; then
-    echo "Distribution $TARGET built: $DEST_FILE"
-else
-    echo "Distribution $TARGET failed: $DEST_FILE"
-    exit 10
-fi
+    if [ -f $DEST_FILE ]; then
+        echo "Distribution $TARGET built: $DEST_FILE"
+    else
+        echo "Distribution $TARGET failed: $DEST_FILE"
+        exit 10
+    fi
+done
 
 echo "All builds completed to $DEST"
