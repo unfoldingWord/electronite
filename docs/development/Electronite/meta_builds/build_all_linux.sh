@@ -20,6 +20,9 @@ echo "Building $BRANCH to: $DEST"
 
 if [ ! -d src ]; then
     echo "Getting sources from $BRANCH"
+    # make sure to get arm64 sources also
+     export GCLIENT_EXTRA_ARGS="--custom-var=checkout_arm64=True"
+     echo "GCLIENT_EXTRA_ARGS=${GCLIENT_EXTRA_ARGS}"
     ./electronite-tools-3.sh get $BRANCH
 fi
 
@@ -33,12 +36,6 @@ for TARGET in "${TARGETS[@]}"; do
     fi
 
     echo "Doing Build $TARGET"
-    if [ "$TARGET" = "arm64" ]; then
-        cd ./src
-        build/linux/sysroot_scripts/install-sysroot.py --arch=arm64
-        cd ..
-    fi
-
     ./build_target_linux.sh $TARGET $DEST
 
     if [ -f $DEST_FILE ]; then

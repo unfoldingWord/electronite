@@ -29,7 +29,7 @@ echo "$DATE" > "./start_time_$1_$2_$DATE.txt"
 export NINJA_STATUS="[%r processes, %f/%t @ %o/s : %es] "
 echo "GIT_CACHE_PATH=${GIT_CACHE_PATH}"
 echo "SCCACHE_BUCKET=${SCCACHE_BUCKET}"
-
+echo "GCLIENT_EXTRA_ARGS=${GCLIENT_EXTRA_ARGS}"
 
 ##########################
 # fetch code
@@ -63,7 +63,7 @@ if [ "$COMMAND" == "get" ]; then
 
   echo "Fetching code. This can take hours and download over 20GB."
   echo "Checking out $ELECTRONITE_REPO.git@origin/$BRANCH"
-  gclient config --name "src/electron" --unmanaged $ELECTRONITE_REPO.git@origin/$BRANCH
+  gclient config --name "src/electron" --unmanaged $ELECTRONITE_REPO.git@origin/$BRANCH ${GCLIENT_EXTRA_ARGS}
 
   echo "Checking out branch and Applying electronite patches"
   gclient sync --with_branch_heads --with_tags
