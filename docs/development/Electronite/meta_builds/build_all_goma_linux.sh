@@ -13,7 +13,7 @@ set -e
 #
 # to troubleshoot build problems, do build logging by doing `export BUILD_EXTRAS=-vvvvv` before running
 #
-# Example `./build_all_goma_linux.sh electronite-v36.2.1-beta results/linux/v36.2.1`
+# Example `./build_all_goma_linux.sh electronite-v35.5.1-beta results/linux/v35.5.1`
 
 BRANCH=$1
 DEST=$2
