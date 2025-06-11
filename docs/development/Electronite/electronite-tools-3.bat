@@ -33,6 +33,12 @@ echo "working_dir=%working_dir%"
 
 echo "%date% - %time%" > start_time_%COMMAND%_%TARGET_%_%PASS%.txt
 
+rem Check if Node.js is installed
+where node >nul 2>nul
+if %ERRORLEVEL% NEQ 0 (
+    echo Node.js is not installed. Please install Node.js before continuing.
+    goto End
+)
 
 rem ------------------------
 rem check command to execute
@@ -152,6 +158,8 @@ rem ####################
     echo *  Electronite Tools  *
     echo ***********************
     echo This is a set of tools for compiling electronite.
+    echo Requirements:
+    echo     - Node.js must be installed
     echo The source for electronite is at https://github.com/unfoldingWord-dev/electronite.
     echo Usage: ./electronite-tools.sh ^<command^>
     echo where ^<command^> is one of:

@@ -13,11 +13,22 @@ set -e
 ELECTRONITE_REPO="https://github.com/unfoldingWord/electronite"
 COMMAND=$1
 
+# Function to check if required tools are installed
+check_required_tool() {
+    if ! command -v $1 &> /dev/null; then
+        echo "$1 is not installed. Please install $1 before continuing."
+        exit 1
+    fi
+}
+
 # Configure environment variables and paths
 export PATH=$PATH:~/.electron_build_tools/third_party/depot_tools:~/.electron_build_tools/src
 echo "PATH = $PATH"
 export GIT_CACHE_PATH=`pwd`/git_cache
 mkdir -p "${GIT_CACHE_PATH}"
+
+# Check if Node.js is installed
+check_required_tool node
 
 export DATE=`date`
 echo "$DATE" > "./start_time_$1_$2_$DATE.txt"
@@ -30,6 +41,7 @@ export NINJA_STATUS="[%r processes, %f/%t @ %o/s : %es] "
 echo "GIT_CACHE_PATH=${GIT_CACHE_PATH}"
 echo "SCCACHE_BUCKET=${SCCACHE_BUCKET}"
 echo "GCLIENT_EXTRA_ARGS=${GCLIENT_EXTRA_ARGS}"
+
 
 ##########################
 # fetch code
