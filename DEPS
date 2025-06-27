@@ -24,7 +24,7 @@ vars = {
   'nodejs_git': 'https://github.com/nodejs',
   'yaml_git': 'https://github.com/yaml',
   'squirrel_git': 'https://github.com/Squirrel',
-  'graphite_git': 'https://github.com/silnrsi'
+  'graphite_git': 'https://github.com/silnrsi',
   'reactiveobjc_git': 'https://github.com/ReactiveCocoa',
   'mantle_git': 'https://github.com/Mantle',
   'engflow_git': 'https://github.com/EngFlow',
