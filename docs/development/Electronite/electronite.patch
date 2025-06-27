@@ -18,7 +18,7 @@ index 5047b6b16..3c928c079 100644
    'mantle_git': 'https://github.com/Mantle',
    'engflow_git': 'https://github.com/EngFlow',
 
-@@ -43,6 +45,7 @@   'checkout_chromium': True,
+@@ -45,6 +47,7 @@   'checkout_chromium': True,
    'checkout_node': True,
    'checkout_nan': True,
    'checkout_pgo_profiles': True,
@@ -26,7 +26,7 @@ index 5047b6b16..3c928c079 100644
  
    # It's only needed to parse the native tests configurations.
    'checkout_pyyaml': False,
-@@ -90,6 +93,10 @@   'src/third_party/pyyaml': {
+@@ -93,6 +96,10 @@   'src/third_party/pyyaml': {
      'url': (Var("yaml_git")) + '/pyyaml.git@' + (Var("pyyaml_version")),
      'condition': 'checkout_pyyaml and process_deps',
    },
@@ -37,7 +37,7 @@ index 5047b6b16..3c928c079 100644
    'src/third_party/squirrel.mac': {
      'url': Var("squirrel_git") + '/Squirrel.Mac.git@' + Var("squirrel.mac_version"),
      'condition': 'process_deps',
-@@ -123,6 +130,16 @@       '--patches-config',
+@@ -130,6 +137,16 @@       '--patches-config',
        'src/electron/patches/config.json',
      ],
    },
@@ -58,7 +58,7 @@ diff --git a/patches/chromium/.patches b/patches/chromium/.patches
 index c7311e348..7f9c36e22 100644
 --- a/patches/chromium/.patches
 +++ b/patches/chromium/.patches
-@@ -77,3 +77,4 @@ fix_non-client_mouse_tracking_and_message_bubbling_on_windows.patch
+@@ -76,3 +76,4 @@ fix_non-client_mouse_tracking_and_message_bubbling_on_windows.patch
  build_make_libcxx_abi_unstable_false_for_electron.patch
  introduce_ozoneplatform_electron_can_call_x11_property.patch
  make_gtk_getlibgtk_public.patch

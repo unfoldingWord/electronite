@@ -36,7 +36,7 @@ git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
 - get the Electronite source code for branch (this can take many hours the first time as the git cache is loaded). Open new terminal window , cd to the build folder and then run:
 ```
 export PATH=$(pwd)/depot_tools:$PATH
-./electronite-tools-3.sh get electronite-v36.2.1-beta
+./electronite-tools-3.sh get electronite-v37.1.0-beta
 ```
 
 - Do build (takes a long time)
@@ -61,7 +61,7 @@ Open elements tab, select body of html, do command-F to search, and search for `
 - get the Electronite source code for branch (this can take many hours the first time as the git cache is loaded):
 ```
 export PATH=$(pwd)/depot_tools:$PATH
-./electronite-tools-3.sh get electronite-v36.2.1-beta
+./electronite-tools-3.sh get electronite-v37.1.0-beta
 ```
 
 - Do build (takes a long time)

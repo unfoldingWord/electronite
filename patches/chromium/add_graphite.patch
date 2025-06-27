@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Joel <da1nerd@pm.me>
 Date: Tue, 23 Jul 2019 15:48:39 -0700
-Subject: [PATCH] adds graphite support for font rendering - patched for v36.2.1
+Subject: [PATCH] adds graphite support for font rendering - patched for v37.1.0
 
 diff --git a/third_party/BUILD.gn b/third_party/BUILD.gn
 index 256fd092e2e0f..ea768d014f1fa 100644
