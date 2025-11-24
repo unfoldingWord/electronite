@@ -12,7 +12,7 @@ set -e
 #
 # to troubleshoot build problems, do build logging by doing `export BUILD_EXTRAS=-vvvvv` before running
 #
-# Example `./build_target_goma_mac.sh x64 results/mac/v37.1.0`
+# Example `./build_target_goma_mac.sh x64 results/mac/v39.2.3`
 
 TARGET=$1
 DEST=$2

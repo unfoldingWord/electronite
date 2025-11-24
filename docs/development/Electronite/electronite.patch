@@ -58,9 +58,8 @@ diff --git a/patches/chromium/.patches b/patches/chromium/.patches
 index c7311e348..7f9c36e22 100644
 --- a/patches/chromium/.patches
 +++ b/patches/chromium/.patches
-@@ -76,3 +76,4 @@ fix_non-client_mouse_tracking_and_message_bubbling_on_windows.patch
+@@ -73,3 +73,4 @@ fix_non-client_mouse_tracking_and_message_bubbling_on_windows.patch
  build_make_libcxx_abi_unstable_false_for_electron.patch
- introduce_ozoneplatform_electron_can_call_x11_property.patch
  make_gtk_getlibgtk_public.patch
 +add_graphite.patch
 diff --git a/patches/chromium/add_graphite.patch b/patches/chromium/add_graphite.patch
