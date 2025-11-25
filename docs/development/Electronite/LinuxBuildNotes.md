@@ -20,7 +20,7 @@ git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
 - get the Electronite source code for branch (this can take many hours the first time as the git cache is loaded). Open new terminal window, cd to the build folder and then run:
 ```
 export PATH=$(pwd)/depot_tools:$PATH
-./electronite-tools-3.sh get electronite-v37.1.0-beta
+./electronite-tools-3.sh get electronite-v38.7.1-beta
 ```
 
 - Do build (takes a long time)
@@ -50,7 +50,7 @@ sudo apt-get install binutils-aarch64-linux-gnu
 - get the Electronite source code for branch (this can take many hours the first time as the git cache is loaded):
 ```
 export PATH=$(pwd)/depot_tools:$PATH
-./electronite-tools-3.sh get electronite-v37.1.0-beta
+./electronite-tools-3.sh get electronite-v38.7.1-beta
 ```
 
 - Build Init: to create `arm64` builds, you must have installed the arm64 dependencies mentioned in the Linux build instructions above.  Then run:

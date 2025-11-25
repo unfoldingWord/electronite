@@ -11,7 +11,7 @@ rem     `set Path=%cd%\depot_tools;%Path%`
 rem
 rem to troubleshoot build problems, do build logging by doing `set BUILD_EXTRAS=-vvvvv` before running
 rem
-rem Example `build_all_win.bat electronite-v37.1.0-beta results\win\v37.1.0`
+rem Example `build_all_win.bat electronite-v38.7.1-beta results\win\v38.7.1`
 
 echo "Building %BRANCH% to: %DEST%"
 

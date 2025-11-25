@@ -12,7 +12,7 @@ rem to enable goma, do `set GOMA=cache-only` before running script
 rem
 rem to troubleshoot build problems, do build logging by doing `set BUILD_EXTRAS=-vvvvv` before running
 rem
-rem Example `build_target_goma_win.bat x64 results\win\v37.1.0`
+rem Example `build_target_goma_win.bat x64 results\win\v38.7.1`
 
 echo "Building %TARGET_% to: %DEST%"
 
