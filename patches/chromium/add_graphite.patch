@@ -15,6 +15,15 @@ index 256fd092e2e0f..ea768d014f1fa 100644
  import("//third_party/libjpeg.gni")
  
  assert(
+@@ -66,6 +67,9 @@ component("freetype_harfbuzz") {
+     public_configs += [ "//third_party/harfbuzz-ng:harfbuzz_from_pkgconfig" ]
+   } else {
+     public_deps += [ "//third_party/harfbuzz-ng:harfbuzz_source" ]
++    if (use_graphite) {
++      public_deps += [ "//third_party/graphite:graphite_source" ]
++    }
+   }
+ }
  
 diff --git a/third_party/blink/renderer/platform/fonts/web_font_decoder.cc b/third_party/blink/renderer/platform/fonts/web_font_decoder.cc
 index 6b4657c3f5b6b..dd3243f04531a 100644
