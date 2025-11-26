@@ -4,7 +4,7 @@ Date: Tue, 23 Jul 2019 15:48:39 -0700
 Subject: [PATCH] adds graphite support for font rendering - patched for v38.7.1
 
 diff --git a/third_party/BUILD.gn b/third_party/BUILD.gn
-index 256fd092e2e0f..ea768d014f1fa 100644
+index 5a35bc4aadc66..f8f271dc0c663 100644
 --- a/third_party/BUILD.gn
 +++ b/third_party/BUILD.gn
 @@ -6,6 +6,7 @@ import("//build/buildflag_header.gni")
@@ -15,21 +15,72 @@ index 256fd092e2e0f..ea768d014f1fa 100644
  import("//third_party/libjpeg.gni")
  
  assert(
-@@ -66,6 +67,9 @@ component("freetype_harfbuzz") {
-     public_configs += [ "//third_party/harfbuzz-ng:harfbuzz_from_pkgconfig" ]
-   } else {
-     public_deps += [ "//third_party/harfbuzz-ng:harfbuzz_source" ]
-+    if (use_graphite) {
-+      public_deps += [ "//third_party/graphite:graphite_source" ]
-+    }
+@@ -49,6 +50,20 @@ group("jpeg_includes") {
    }
  }
  
++# Add graphite dependency to harfbuzz
++component("graphite_harfbuzz") {
++  public_configs = []
++  public_deps = []
++  if (use_system_harfbuzz) {
++    public_configs += [ "//third_party/harfbuzz-ng:harfbuzz_from_pkgconfig" ]
++  } else {
++    public_deps += [ "//third_party/harfbuzz-ng:harfbuzz_source" ]
++    if (use_graphite) {
++      public_deps += [ "//third_party/graphite:graphite_source" ]
++    }
++  }
++}
++
+ buildflag_header("freetype_buildflags") {
+   header = "freetype_buildflags.h"
+   flags = [
+diff --git a/third_party/blink/renderer/core/BUILD.gn b/third_party/blink/renderer/core/BUILD.gn
+index e56a663f46b64..cd1795b954266 100644
+--- a/third_party/blink/renderer/core/BUILD.gn
++++ b/third_party/blink/renderer/core/BUILD.gn
+@@ -1543,6 +1543,7 @@ source_set("unit_tests") {
+     "//third_party/blink/renderer/platform:test_support",
+     "//third_party/fuzztest",
+     "//third_party/harfbuzz-ng",
++    "//third_party/graphite_harfbuzz",
+     "//ui/accessibility:ax_base",
+     "//ui/base/cursor",
+     "//ui/base/cursor/mojom:cursor_type_blink",
+diff --git a/third_party/blink/renderer/platform/BUILD.gn b/third_party/blink/renderer/platform/BUILD.gn
+index 67f6aecb0f50b..97d1e2278481b 100644
+--- a/third_party/blink/renderer/platform/BUILD.gn
++++ b/third_party/blink/renderer/platform/BUILD.gn
+@@ -1825,6 +1825,7 @@ component("platform") {
+     "//third_party/ced",
+     "//third_party/emoji-segmenter",
+     "//third_party/harfbuzz-ng",
++    "//third_party/graphite_harfbuzz",
+     "//third_party/highway:libhwy",
+     "//third_party/icu",
+     "//third_party/libgav1:libgav1_parser",
+@@ -2476,6 +2477,7 @@ source_set("blink_platform_unittests_sources") {
+     "//third_party/dawn/src/dawn/native",
+     "//third_party/dawn/src/dawn/wire",
+     "//third_party/harfbuzz-ng",
++    "//third_party/graphite_harfbuzz",
+     "//third_party/libyuv",
+     "//third_party/webrtc/api/task_queue:task_queue_test",
+     "//third_party/webrtc_overrides:metronome_like_task_queue_test",
+@@ -2605,6 +2607,7 @@ test("blink_platform_perftests") {
+     "//testing/gtest",
+     "//testing/perf",
+     "//third_party/harfbuzz-ng",
++    "//third_party/graphite_harfbuzz",
+   ]
+ }
+ 
 diff --git a/third_party/blink/renderer/platform/fonts/web_font_decoder.cc b/third_party/blink/renderer/platform/fonts/web_font_decoder.cc
-index 6b4657c3f5b6b..dd3243f04531a 100644
+index 757d2134fe4db..bb25dfae55939 100644
 --- a/third_party/blink/renderer/platform/fonts/web_font_decoder.cc
 +++ b/third_party/blink/renderer/platform/fonts/web_font_decoder.cc
-@@ -106,6 +106,11 @@ ots::TableAction BlinkOTSContext::GetTableAction(uint32_t tag) {
+@@ -118,6 +118,11 @@ ots::TableAction BlinkOTSContext::GetTableAction(uint32_t tag) {
    const uint32_t kCblcTag = OTS_TAG('C', 'B', 'L', 'C');
    const uint32_t kColrTag = OTS_TAG('C', 'O', 'L', 'R');
    const uint32_t kCpalTag = OTS_TAG('C', 'P', 'A', 'L');
@@ -41,7 +92,7 @@ index 6b4657c3f5b6b..dd3243f04531a 100644
    const uint32_t kCff2Tag = OTS_TAG('C', 'F', 'F', '2');
    const uint32_t kSbixTag = OTS_TAG('s', 'b', 'i', 'x');
    const uint32_t kStatTag = OTS_TAG('S', 'T', 'A', 'T');
-@@ -134,6 +139,12 @@ ots::TableAction BlinkOTSContext::GetTableAction(uint32_t tag) {
+@@ -146,6 +151,12 @@ ots::TableAction BlinkOTSContext::GetTableAction(uint32_t tag) {
      // Windows Color Emoji Tables
      case kColrTag:
      case kCpalTag:
@@ -54,7 +105,6 @@ index 6b4657c3f5b6b..dd3243f04531a 100644
      case kCff2Tag:
      case kSbixTag:
      case kStatTag:
- #if HB_VERSION_ATLEAST(1, 0, 0)
 diff --git a/third_party/graphite/BUILD.gn b/third_party/graphite/BUILD.gn
 new file mode 100644
 index 0000000000000..75b8267c80910
@@ -187,10 +237,10 @@ index 0000000000000..a053150ebfb47
 +    use_graphite = true
 +}
 diff --git a/third_party/harfbuzz-ng/BUILD.gn b/third_party/harfbuzz-ng/BUILD.gn
-index 753e7e82b8dc4..d1f223068f519 100644
+index ef09902639a36..7f6f21bd6f7d1 100644
 --- a/third_party/harfbuzz-ng/BUILD.gn
 +++ b/third_party/harfbuzz-ng/BUILD.gn
-@@ -9,6 +9,7 @@ import("//build/config/freetype/freetype.gni")
+@@ -8,6 +8,7 @@ import("//build/config/features.gni")
  import("//build/config/ui.gni")
  import("//testing/libfuzzer/fuzzer_test.gni")
  import("//third_party/harfbuzz-ng/harfbuzz.gni")
@@ -198,7 +248,7 @@ index 753e7e82b8dc4..d1f223068f519 100644
  
  if (use_system_harfbuzz) {
    import("//build/config/linux/pkg_config.gni")
-@@ -449,6 +450,16 @@ if (use_system_harfbuzz) {
+@@ -436,6 +437,16 @@ if (use_system_harfbuzz) {
        public += [ "src/src/hb-glib.h" ]
        sources += [ "src/src/hb-glib.cc" ]
      }
@@ -215,3 +265,19 @@ index 753e7e82b8dc4..d1f223068f519 100644
    }
  }
  
+@@ -446,6 +457,7 @@ if (build_with_chromium) {
+     deps = [
+       "//base",
+       "//third_party/harfbuzz-ng",
++      "//third_party/graphite_harfbuzz",
+     ]
+     seed_corpus = "fuzz/seed_corpus"
+   }
+@@ -455,6 +467,7 @@ if (build_with_chromium) {
+     deps = [
+       "//base",
+       "//third_party/harfbuzz-ng",
++      "//third_party/graphite_harfbuzz",
+     ]
+     seed_corpus = "fuzz/seed_corpus"
+   }
