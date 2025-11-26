@@ -44,7 +44,7 @@ index e56a663f46b64..cd1795b954266 100644
      "//third_party/blink/renderer/platform:test_support",
      "//third_party/fuzztest",
      "//third_party/harfbuzz-ng",
-+    "//third_party/graphite_harfbuzz",
++    "//third_party:graphite_harfbuzz",
      "//ui/accessibility:ax_base",
      "//ui/base/cursor",
      "//ui/base/cursor/mojom:cursor_type_blink",
@@ -56,7 +56,7 @@ index 67f6aecb0f50b..97d1e2278481b 100644
      "//third_party/ced",
      "//third_party/emoji-segmenter",
      "//third_party/harfbuzz-ng",
-+    "//third_party/graphite_harfbuzz",
++    "//third_party:graphite_harfbuzz",
      "//third_party/highway:libhwy",
      "//third_party/icu",
      "//third_party/libgav1:libgav1_parser",
@@ -64,7 +64,7 @@ index 67f6aecb0f50b..97d1e2278481b 100644
      "//third_party/dawn/src/dawn/native",
      "//third_party/dawn/src/dawn/wire",
      "//third_party/harfbuzz-ng",
-+    "//third_party/graphite_harfbuzz",
++    "//third_party:graphite_harfbuzz",
      "//third_party/libyuv",
      "//third_party/webrtc/api/task_queue:task_queue_test",
      "//third_party/webrtc_overrides:metronome_like_task_queue_test",
@@ -72,7 +72,7 @@ index 67f6aecb0f50b..97d1e2278481b 100644
      "//testing/gtest",
      "//testing/perf",
      "//third_party/harfbuzz-ng",
-+    "//third_party/graphite_harfbuzz",
++    "//third_party:graphite_harfbuzz",
    ]
  }
  
@@ -269,7 +269,7 @@ index ef09902639a36..7f6f21bd6f7d1 100644
      deps = [
        "//base",
        "//third_party/harfbuzz-ng",
-+      "//third_party/graphite_harfbuzz",
++      "//third_party:graphite_harfbuzz",
      ]
      seed_corpus = "fuzz/seed_corpus"
    }
@@ -277,7 +277,7 @@ index ef09902639a36..7f6f21bd6f7d1 100644
      deps = [
        "//base",
        "//third_party/harfbuzz-ng",
-+      "//third_party/graphite_harfbuzz",
++      "//third_party:graphite_harfbuzz",
      ]
      seed_corpus = "fuzz/seed_corpus"
    }
