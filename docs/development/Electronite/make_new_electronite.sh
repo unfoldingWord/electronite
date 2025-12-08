@@ -19,6 +19,7 @@ CREDS=$3
 # get files from previous version
 git fetch --all
 git checkout $OLD_ELECTRONITE_BRANCH
+git branch --set-upstream-to=origin/$OLD_ELECTRONITE_BRANCH
 git pull
 mkdir -p ./temp_files/Electronite
 cp -R ./docs/development/Electronite ./temp_files
