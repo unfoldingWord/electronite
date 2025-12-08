@@ -25,7 +25,7 @@ if [ ! -d src ]; then
     ./electronite-tools-goma-3.sh get $BRANCH
 fi
 
-TARGET=x64
+TARGET=arm64
 DEST_FILE=$DEST/$TARGET/dist.zip
 if [ -f $DEST_FILE ]; then
     echo "Build $TARGET already exists: $DEST_FILE"
@@ -41,7 +41,7 @@ else
     exit 10
 fi
 
-TARGET=arm64
+TARGET=x64
 DEST_FILE=$DEST/$TARGET/dist.zip
 if [ -f $DEST_FILE ]; then
     echo "Build $TARGET already exists: $DEST_FILE"

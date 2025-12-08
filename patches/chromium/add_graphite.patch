@@ -79,7 +79,7 @@ index 0000000000000..75b8267c80910
 +}
 +
 +source_set("graphite_source") {
-+    visibility = [ "//third_party:freetype_harfbuzz" ]
++    visibility = [ "//third_party/harfbuzz-ng:harfbuzz-ng" ]
 +
 +    sources = [
 +        "graphite2/src/direct_machine.cpp",
@@ -189,7 +189,7 @@ index 753e7e82b8dc4..d1f223068f519 100644
  
  if (use_system_harfbuzz) {
    import("//build/config/linux/pkg_config.gni")
-@@ -449,6 +450,16 @@ if (use_system_harfbuzz) {
+@@ -449,6 +450,18 @@ if (use_system_harfbuzz) {
        public += [ "src/src/hb-glib.h" ]
        sources += [ "src/src/hb-glib.cc" ]
      }
@@ -202,6 +202,8 @@ index 753e7e82b8dc4..d1f223068f519 100644
 +      defines += ["HAVE_GRAPHITE2",
 +                  "GRAPHITE2_STATIC"
 +                 ]
++
++      deps += [ "//third_party/graphite:graphite_source" ]      
 +    }
    }
  }
