@@ -18,7 +18,7 @@ index 5047b6b16..3c928c079 100644
    'mantle_git': 'https://github.com/Mantle',
    'engflow_git': 'https://github.com/EngFlow',
 
-@@ -43,6 +45,7 @@   'checkout_chromium': True,
+@@ -42,6 +44,7 @@   'checkout_chromium': True,
    'checkout_node': True,
    'checkout_nan': True,
    'checkout_pgo_profiles': True,
@@ -37,7 +37,7 @@ index 5047b6b16..3c928c079 100644
    'src/third_party/squirrel.mac': {
      'url': Var("squirrel_git") + '/Squirrel.Mac.git@' + Var("squirrel.mac_version"),
      'condition': 'process_deps',
-@@ -123,6 +144,16 @@       '--patches-config',
+@@ -127,6 +134,16 @@       '--patches-config',
        'src/electron/patches/config.json',
      ],
    },

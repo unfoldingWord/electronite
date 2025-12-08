@@ -17,12 +17,14 @@ vars = {
     '955335c30a752e9ef7bff375baab5e0819b6c00d',
 
   'pyyaml_version': '3.12',
+  'graphite_version': '92f59dcc52f73ce747f1cdc831579ed2546884aa',
 
   'chromium_git': 'https://chromium.googlesource.com',
   'electron_git': 'https://github.com/electron',
   'nodejs_git': 'https://github.com/nodejs',
   'yaml_git': 'https://github.com/yaml',
   'squirrel_git': 'https://github.com/Squirrel',
+  'graphite_git': 'https://github.com/silnrsi',
   'reactiveobjc_git': 'https://github.com/ReactiveCocoa',
   'mantle_git': 'https://github.com/Mantle',
   'engflow_git': 'https://github.com/EngFlow',
@@ -41,6 +43,7 @@ vars = {
   'checkout_node': True,
   'checkout_nan': True,
   'checkout_pgo_profiles': True,
+  'checkout_graphite': True,
 
   # It's only needed to parse the native tests configurations.
   'checkout_pyyaml': False,
@@ -88,6 +91,10 @@ deps = {
     'url': (Var("yaml_git")) + '/pyyaml.git@' + (Var("pyyaml_version")),
     'condition': 'checkout_pyyaml and process_deps',
   },
+  'src/third_party/graphite/graphite2': {
+    'url': (Var("graphite_git")) + '/graphite.git@' + (Var("graphite_version")),
+    'condition': 'checkout_graphite and process_deps',
+  },
   'src/third_party/squirrel.mac': {
     'url': Var("squirrel_git") + '/Squirrel.Mac.git@' + Var("squirrel.mac_version"),
     'condition': 'process_deps',
@@ -121,7 +128,16 @@ pre_deps_hooks = [
       'src/electron/patches/config.json',
     ],
   },
-]
+  {
+    'name': 'setup_graphite',
+    'condition': 'checkout_graphite and apply_patches and process_deps',
+    'pattern': 'src/electron',
+    'action': [
+      'python3',
+      '-c',
+      'import os; os.makedirs(os.path.join("src", "electron", "third_party", "graphite"));',
+    ],
+  },]
 
 hooks = [
   {

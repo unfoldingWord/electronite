@@ -13,7 +13,7 @@ set -e
 #
 # to troubleshoot build problems, do build logging by doing `export BUILD_EXTRAS=-vvvvv` before running
 #
-# Example `./build_all_goma_mac.sh electronite-v38.7.1-beta results/mac/v38.7.1`
+# Example `./build_all_goma_mac.sh electronite-v39.2.6-beta results/mac/v39.2.6`
 
 BRANCH=$1
 DEST=$2
