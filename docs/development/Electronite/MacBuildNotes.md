@@ -46,7 +46,7 @@ export PATH=$(pwd)/depot_tools:$PATH
 ```
 
 - Test the build. 
-  - Do `cd src/out/Release-x64` and then `open ./Electron.app "https://graphite.sil.org/graphite_fontdemo.html"`)
+  - Do `cd src/out/Release-x64` and then `open ./Electron.app`)
   - Open the developer console by typing`Command-Alt-I`.
   - in console execute `window.location="https://graphite.sil.org/graphite_fontdemo.html"`
   - Ensure all the tests pass by visually inspecting the rendered fonts and comparing against the image samples on the site.
