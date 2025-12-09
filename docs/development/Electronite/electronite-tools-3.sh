@@ -156,9 +156,10 @@ if [ "$COMMAND" == "release" ]; then
 
   echo "Creating distributable"
   cd src
-  if [ "`uname`" != "Darwin" ]; then
-    ./electron/script/strip-binaries.py ${STRIP_EXTRA_ARGS} -d out/Release${RELEASE_TARGET}
-  fi
+# the strip-binaries.py no longer exists in repo, seems to be part of electron build.gn now
+#  if [ "`uname`" != "Darwin" ]; then
+#    ./electron/script/strip-binaries.py ${STRIP_EXTRA_ARGS} -d out/Release${RELEASE_TARGET}
+#  fi
   ninja -C out/Release${RELEASE_TARGET} electron:electron_dist_zip ${BUILD_EXTRAS}
   
   export DATE=`date`
