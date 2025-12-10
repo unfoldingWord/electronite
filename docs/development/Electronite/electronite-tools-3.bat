@@ -139,11 +139,11 @@ cd src
 
 if %build_x64% == false (
     echo Creating %2 distributable
-    electron\script\strip-binaries.py -d out\Release-%2
+    rem electron\script\strip-binaries.py -d out\Release-%2
     call ninja -C out\Release-%2 electron:electron_dist_zip %BUILD_EXTRAS%
 ) else (
     echo Creating distributable
-    electron\script\strip-binaries.py -d out\Release
+    rem electron\script\strip-binaries.py -d out\Release
     call ninja -C out\Release electron:electron_dist_zips %BUILD_EXTRAS%
 )
 
