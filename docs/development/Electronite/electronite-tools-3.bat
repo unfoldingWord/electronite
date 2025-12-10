@@ -92,7 +92,7 @@ call git status
 call git describe --tags
 cd ..\..
 
-if exist .\electron\docs\development\Electronite\add_graphite_cpp_std_iterator.patch (
+if exist .\src\electron\docs\development\Electronite\add_graphite_cpp_std_iterator.patch (
     rem save in case graphite patch fails
     echo "%date% - %time%" > end_time_%COMMAND%_%TARGET_%_%PASS%.txt
     
