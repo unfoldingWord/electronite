@@ -45,7 +45,6 @@ index ec06f8e649efe..2e90e8c2995d5 100644
      case kCff2Tag:
      case kSbixTag:
      case kStatTag:
- #if HB_VERSION_ATLEAST(1, 0, 0)
 diff --git a/third_party/graphite/BUILD.gn b/third_party/graphite/BUILD.gn
 new file mode 100644
 index 0000000000000..75b8267c80910
@@ -178,12 +177,12 @@ index 0000000000000..a053150ebfb47
 +    use_graphite = true
 +}
 diff --git a/third_party/harfbuzz/BUILD.gn b/third_party/harfbuzz/BUILD.gn
-index 753e7e82b8dc4..d1f223068f519 100644
+index b4d655be49e2e..4ca8da981c8d1 100644
 --- a/third_party/harfbuzz/BUILD.gn
 +++ b/third_party/harfbuzz/BUILD.gn
-@@ -9,6 +9,7 @@ import("//build/config/freetype/freetype.gni")
+@@ -6,6 +6,7 @@ import("//build/config/buildflags_paint_preview.gni")
+ import("//build/config/chrome_build.gni")
  import("//build/config/ui.gni")
- import("//testing/libfuzzer/fuzzer_test.gni")
  import("//third_party/harfbuzz/harfbuzz.gni")
 +import("//third_party/graphite/graphite.gni")
  
