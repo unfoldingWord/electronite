@@ -9,7 +9,7 @@ set -e
 #     No obvious reason for this, but found it started working by either setting or 
 #     clearing ID `export AWS_SECRET_ACCESS_KEY=` before running script.
 #
-# Example `./copy_from_s3.sh v39.2.6`
+# Example `./copy_from_s3.sh v44.9.3`
 
 VERSION=$1
 

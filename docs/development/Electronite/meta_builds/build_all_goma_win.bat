@@ -13,7 +13,7 @@ rem to enable goma, do `set GOMA=cache-only` before running script
 rem
 rem to troubleshoot build problems, do build logging by doing `set BUILD_EXTRAS=-vvvvv` before running
 rem
-rem Example `build_all_goma_win.bat electronite-v39.2.6-beta results\win\v39.2.6`
+rem Example `build_all_goma_win.bat electronite-v44.9.3-beta results\win\v44.9.3`
 
 echo "Building %BRANCH% to: %DEST%"
 

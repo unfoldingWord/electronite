@@ -11,7 +11,7 @@ set -e
 #     No obvious reason for this, but found it started working by either setting or 
 #     clearing ID `export AWS_SECRET_ACCESS_KEY=` before running script.
 #
-# Example `./copy_all_to_s3.py v39.2.6`
+# Example `./copy_all_to_s3.py v44.9.3`
 
 VERSION=$1
 
