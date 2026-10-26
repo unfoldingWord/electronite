@@ -79,7 +79,7 @@ index 0000000000000..75b8267c80910
 +}
 +
 +source_set("graphite_source") {
-+    visibility = [ "//third_party/harfbuzz-ng:harfbuzz-ng" ]
++    visibility = [ "//third_party/harfbuzz:harfbuzz" ]
 +
 +    sources = [
 +        "graphite2/src/direct_machine.cpp",
@@ -177,14 +177,14 @@ index 0000000000000..a053150ebfb47
 +declare_args() {
 +    use_graphite = true
 +}
-diff --git a/third_party/harfbuzz-ng/BUILD.gn b/third_party/harfbuzz-ng/BUILD.gn
+diff --git a/third_party/harfbuzz/BUILD.gn b/third_party/harfbuzz/BUILD.gn
 index 753e7e82b8dc4..d1f223068f519 100644
---- a/third_party/harfbuzz-ng/BUILD.gn
-+++ b/third_party/harfbuzz-ng/BUILD.gn
+--- a/third_party/harfbuzz/BUILD.gn
++++ b/third_party/harfbuzz/BUILD.gn
 @@ -9,6 +9,7 @@ import("//build/config/freetype/freetype.gni")
  import("//build/config/ui.gni")
  import("//testing/libfuzzer/fuzzer_test.gni")
- import("//third_party/harfbuzz-ng/harfbuzz.gni")
+ import("//third_party/harfbuzz/harfbuzz.gni")
 +import("//third_party/graphite/graphite.gni")
  
  if (use_system_harfbuzz) {
