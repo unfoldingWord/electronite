@@ -1,9 +1,9 @@
 diff --git a/DEPS b/DEPS
-index 5047b6b16..3c928c079 100644
+index b1f99e77cb..749a926b94 100644
 --- a/DEPS
 +++ b/DEPS
-@@ -16,12 +16,14 @@   'engflow_reclient_configs_version':
-     '955335c30a752e9ef7bff375baab5e0819b6c00d',
+@@ -17,12 +17,14 @@ vars = {
+     '79bc9e872948e47877e76f194cb0c8e0412b0b90',
  
    'pyyaml_version': '3.12',
 +  'graphite_version': '92f59dcc52f73ce747f1cdc831579ed2546884aa',
@@ -16,17 +16,16 @@ index 5047b6b16..3c928c079 100644
 +  'graphite_git': 'https://github.com/silnrsi',
    'reactiveobjc_git': 'https://github.com/ReactiveCocoa',
    'mantle_git': 'https://github.com/Mantle',
-   'engflow_git': 'https://github.com/EngFlow',
-
-@@ -42,6 +44,7 @@   'checkout_chromium': True,
-   'checkout_node': True,
-   'checkout_nan': True,
-   'checkout_pgo_profiles': True,
+   'sparkle_git': 'https://github.com/sparkle-project',
+@@ -45,6 +47,7 @@ vars = {
+   # True (and set the pgo_data_path GN arg) to build against Chrome's
+   # profiles instead.
+   'checkout_pgo_profiles': False,
 +  'checkout_graphite': True,
  
    # It's only needed to parse the native tests configurations.
    'checkout_pyyaml': False,
-@@ -90,6 +93,10 @@   'src/third_party/pyyaml': {
+@@ -92,6 +95,10 @@ deps = {
      'url': (Var("yaml_git")) + '/pyyaml.git@' + (Var("pyyaml_version")),
      'condition': 'checkout_pyyaml and process_deps',
    },
@@ -37,7 +36,7 @@ index 5047b6b16..3c928c079 100644
    'src/third_party/squirrel.mac': {
      'url': Var("squirrel_git") + '/Squirrel.Mac.git@' + Var("squirrel.mac_version"),
      'condition': 'process_deps',
-@@ -127,6 +134,16 @@       '--patches-config',
+@@ -125,6 +132,16 @@ pre_deps_hooks = [
        'src/electron/patches/config.json',
      ],
    },
@@ -55,50 +54,43 @@ index 5047b6b16..3c928c079 100644
  
  hooks = [
 diff --git a/patches/chromium/.patches b/patches/chromium/.patches
-index c7311e348..7f9c36e22 100644
+index 4215d4a35f..5a93182fe9 100644
 --- a/patches/chromium/.patches
 +++ b/patches/chromium/.patches
-@@ -73,2 +73,3 @@ fix_non-client_mouse_tracking_and_message_bubbling_on_windows.patch
- build_make_libcxx_abi_unstable_false_for_electron.patch
- make_gtk_getlibgtk_public.patch
+@@ -293,3 +293,4 @@ cherry-pick-28e2d315f844.patch
+ cherry-pick-2ec1ba2211a0.patch
+ cherry-pick-73c78a52d2b7.patch
+ cherry-pick-c0e830bdda6e.patch
 +add_graphite.patch
 diff --git a/patches/chromium/add_graphite.patch b/patches/chromium/add_graphite.patch
 new file mode 100644
-index 000000000..33bc776bd
+index 0000000000..65c4e295e2
 --- /dev/null
 +++ b/patches/chromium/add_graphite.patch
-@@ -0,0 +1,217 @@
+@@ -0,0 +1,210 @@
 +From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 +From: Joel <da1nerd@pm.me>
 +Date: Tue, 23 Jul 2019 15:48:39 -0700
-+Subject: [PATCH] adds graphite support for font rendering - patched for v17.3.1 though v18.2.1
++Subject: [PATCH] adds graphite support for font rendering - patched for v39.2.6
 +
 +diff --git a/third_party/BUILD.gn b/third_party/BUILD.gn
-+index a62632e2c3fcf..0a8714996d3b9 100644
++index 256fd092e2e0f..ea768d014f1fa 100644
 +--- a/third_party/BUILD.gn
 ++++ b/third_party/BUILD.gn
-+@@ -4,6 +4,7 @@q
-+ 
++@@ -6,6 +6,7 @@ import("//build/buildflag_header.gni")
++ import("//build/config/features.gni")
 + import("//build/config/freetype/freetype.gni")
 + import("//third_party/harfbuzz-ng/harfbuzz.gni")
 ++import("//third_party/graphite/graphite.gni")
 + import("//third_party/libjpeg.gni")
 + 
-+ assert(!is_ios, "This is not used on iOS, don't drag it in unintentionally")
-+@@ -60,5 +61,8 @@ component("freetype_harfbuzz") {
-+     public_configs += [ "//third_party/harfbuzz-ng:harfbuzz_from_pkgconfig" ]
-+   } else {
-+     public_deps += [ "//third_party/harfbuzz-ng:harfbuzz_source" ]
-++    if (use_graphite) {
-++      public_deps += [ "//third_party/graphite:graphite_source" ]
-++    }
-+   }
-+ }
++ assert(
++ 
 +diff --git a/third_party/blink/renderer/platform/fonts/web_font_decoder.cc b/third_party/blink/renderer/platform/fonts/web_font_decoder.cc
-+index 6e388c9135c64..e6eea739ac230 100644
++index 6b4657c3f5b6b..dd3243f04531a 100644
 +--- a/third_party/blink/renderer/platform/fonts/web_font_decoder.cc
 ++++ b/third_party/blink/renderer/platform/fonts/web_font_decoder.cc
-+@@ -95,6 +95,11 @@ ots::TableAction BlinkOTSContext::GetTableAction(uint32_t tag) {
++@@ -106,6 +106,11 @@ ots::TableAction BlinkOTSContext::GetTableAction(uint32_t tag) {
 +   const uint32_t kCblcTag = OTS_TAG('C', 'B', 'L', 'C');
 +   const uint32_t kColrTag = OTS_TAG('C', 'O', 'L', 'R');
 +   const uint32_t kCpalTag = OTS_TAG('C', 'P', 'A', 'L');
@@ -109,8 +101,8 @@ index 000000000..33bc776bd
 ++  const uint32_t kSillTag = OTS_TAG('S', 'i', 'l', 'l');
 +   const uint32_t kCff2Tag = OTS_TAG('C', 'F', 'F', '2');
 +   const uint32_t kSbixTag = OTS_TAG('s', 'b', 'i', 'x');
-+ #if HB_VERSION_ATLEAST(1, 0, 0)
-+@@ -121,6 +126,12 @@ ots::TableAction BlinkOTSContext::GetTableAction(uint32_t tag) {
++   const uint32_t kStatTag = OTS_TAG('S', 'T', 'A', 'T');
++@@ -134,6 +139,12 @@ ots::TableAction BlinkOTSContext::GetTableAction(uint32_t tag) {
 +     // Windows Color Emoji Tables
 +     case kColrTag:
 +     case kCpalTag:
@@ -122,6 +114,7 @@ index 000000000..33bc776bd
 ++    case kSillTag:
 +     case kCff2Tag:
 +     case kSbixTag:
++     case kStatTag:
 + #if HB_VERSION_ATLEAST(1, 0, 0)
 +diff --git a/third_party/graphite/BUILD.gn b/third_party/graphite/BUILD.gn
 +new file mode 100644
@@ -156,7 +149,7 @@ index 000000000..33bc776bd
 ++}
 ++
 ++source_set("graphite_source") {
-++    visibility = [ "//third_party:freetype_harfbuzz" ]
+++    visibility = [ "//third_party/harfbuzz-ng:harfbuzz-ng" ]
 ++
 ++    sources = [
 ++        "graphite2/src/direct_machine.cpp",
@@ -255,7 +248,7 @@ index 000000000..33bc776bd
 ++    use_graphite = true
 ++}
 +diff --git a/third_party/harfbuzz-ng/BUILD.gn b/third_party/harfbuzz-ng/BUILD.gn
-+index be6f93b56915a..f175e50ff1447 100644
++index 753e7e82b8dc4..d1f223068f519 100644
 +--- a/third_party/harfbuzz-ng/BUILD.gn
 ++++ b/third_party/harfbuzz-ng/BUILD.gn
 +@@ -9,6 +9,7 @@ import("//build/config/freetype/freetype.gni")
@@ -266,11 +259,10 @@ index 000000000..33bc776bd
 + 
 + if (use_system_harfbuzz) {
 +   import("//build/config/linux/pkg_config.gni")
-+@@ -393,6 +394,17 @@ if (use_system_harfbuzz) {
++@@ -449,6 +450,18 @@ if (use_system_harfbuzz) {
 +       public += [ "src/src/hb-glib.h" ]
 +       sources += [ "src/src/hb-glib.cc" ]
 +     }
-++
 ++    if (use_graphite) {
 ++      configs += [ "//third_party/graphite:graphite_config" ]
 ++      sources += [
@@ -280,9 +272,9 @@ index 000000000..33bc776bd
 ++      defines += ["HAVE_GRAPHITE2",
 ++                  "GRAPHITE2_STATIC"
 ++                 ]
+++
+++      deps += [ "//third_party/graphite:graphite_source" ]      
 ++    }
 +   }
 + }
 + 
-+ 
-\ No newline at end of file
