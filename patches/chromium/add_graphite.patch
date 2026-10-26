@@ -10,7 +10,7 @@ index 256fd092e2e0f..ea768d014f1fa 100644
 @@ -6,6 +6,7 @@ import("//build/buildflag_header.gni")
  import("//build/config/features.gni")
  import("//build/config/freetype/freetype.gni")
- import("//third_party/harfbuzz-ng/harfbuzz.gni")
+ import("//third_party/harfbuzz/harfbuzz.gni")
 +import("//third_party/graphite/graphite.gni")
  import("//third_party/libjpeg.gni")
  
