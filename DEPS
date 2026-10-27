@@ -139,7 +139,7 @@ pre_deps_hooks = [
     'action': [
       'python3',
       '-c',
-      'import os; os.makedirs(os.path.join("src", "electron", "third_party", "graphite"));',
+      'import os; os.makedirs(os.path.join("src", "electron", "third_party", "graphite"), exist_ok=True);',
     ],
   },
 ]
