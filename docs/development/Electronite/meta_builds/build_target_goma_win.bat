@@ -21,7 +21,7 @@ if exist %BUILD_TARGET% (
     echo "Build Target already exists: %BUILD_TARGET%"
 ) else (
     echo "Doing Build %TARGET_%"
-    call .\electronite-tools-goma-3.bat build %TARGET_%
+    call .\electronite-tools-goma-4.bat build %TARGET_%
     echo "Finish Build %TARGET_%"
 )
 
@@ -37,7 +37,7 @@ if exist %RELEASE_TARGET% (
     echo "Release Target already exists: %RELEASE_TARGET%"
 ) else (
     echo "Doing Release %RELEASE_TARGET%"
-    call .\electronite-tools-goma-3.bat release %TARGET_%
+    call .\electronite-tools-goma-4.bat release %TARGET_%
     echo "Finished Release %RELEASE_TARGET%"
 )
 

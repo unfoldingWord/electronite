@@ -17,7 +17,7 @@ echo "Building %BRANCH% to: %DEST%"
 
 if not exist src (
     echo "Getting sources from %BRANCH%"
-    call electronite-tools-3.bat get %BRANCH%
+    call electronite-tools-4.bat get %BRANCH%
 )
 
 set TARGET_=x64

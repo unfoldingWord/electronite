@@ -14,19 +14,19 @@ git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
 - note 32-bit builds for Linux no longer supported.
 
 ### Build Electronite
-- first make sure you have downloaded the current version of electronite-tools-3.sh.  There may have been changes from other electronite versions.
+- first make sure you have downloaded the current version of electronite-tools-4.sh.  There may have been changes from other electronite versions.
 
 #### Build x64
 - get the Electronite source code for branch (this can take many hours the first time as the git cache is loaded). Open new terminal window, cd to the build folder and then run:
 ```
 export PATH=$(pwd)/depot_tools:$PATH
-./electronite-tools-3.sh get electronite-v44.9.3-beta
+./electronite-tools-4.sh get electronite-v44.9.3-beta
 ```
 
 - Do build (takes a long time)
 ```
-./electronite-tools-3.sh build x64
-./electronite-tools-3.sh release x64
+./electronite-tools-4.sh build x64
+./electronite-tools-4.sh release x64
 ```
 
 - Test the build.
@@ -50,7 +50,7 @@ sudo apt-get install binutils-aarch64-linux-gnu
 - get the Electronite source code for branch (this can take many hours the first time as the git cache is loaded):
 ```
 export PATH=$(pwd)/depot_tools:$PATH
-./electronite-tools-3.sh get electronite-v44.9.3-beta
+./electronite-tools-4.sh get electronite-v44.9.3-beta
 ```
 
 - Build Init: to create `arm64` builds, you must have installed the arm64 dependencies mentioned in the Linux build instructions above.  Then run:
@@ -62,8 +62,8 @@ cd ..
 
 - Do build (takes a long time)
 ```
-./electronite-tools-3.sh build arm64
-./electronite-tools-3.sh release arm64
+./electronite-tools-4.sh build arm64
+./electronite-tools-4.sh release arm64
 ```
 
 - The release is at ~/Develop/Electronite-Build/src/out/Release-arm64/dist.zip

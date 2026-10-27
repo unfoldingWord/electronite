@@ -25,6 +25,12 @@ mkdir -p ./temp_files/Electronite
 cp -R ./docs/development/Electronite ./temp_files
 cp patches/chromium/add_graphite.patch temp_files/add_graphite.patch
 
+# save the graphite2 patch target - applied to src/third_party/graphite/graphite2
+# by the patch_chromium hook, see patches/config.json
+if [ -d patches/graphite2 ]; then
+  cp -R ./patches/graphite2 ./temp_files
+fi
+
 # save Electronite CLAUDE.md - the new branch will carry upstream Electron's version
 if [ -f CLAUDE.md ]; then
   cp CLAUDE.md temp_files/CLAUDE.md
@@ -59,6 +65,13 @@ mkdir -p ./docs/development/Electronite
 cp -R ./temp_files/Electronite ./docs/development
 cp temp_files/add_graphite.patch patches/chromium/add_graphite.patch
 
+# restore the graphite2 patch target. patches/config.json is NOT copied forward -
+# it is an upstream file that changes each release, so re-apply its one-line
+# graphite2 entry from electronite.patch instead
+if [ -d temp_files/graphite2 ]; then
+  cp -R ./temp_files/graphite2 ./patches
+fi
+
 # keep previous Electronite CLAUDE.md as CLAUDE.oldElectronite.md to merge into the new one
 if [ -f temp_files/CLAUDE.md ]; then
   cp temp_files/CLAUDE.md ./CLAUDE.oldElectronite.md
@@ -67,6 +80,9 @@ fi
 # add new files to commit
 git add docs/development/Electronite/
 git add patches/chromium/add_graphite.patch
+if [ -d patches/graphite2 ]; then
+  git add patches/graphite2/
+fi
 if [ -f CLAUDE.oldElectronite.md ]; then
   git add CLAUDE.oldElectronite.md
 fi

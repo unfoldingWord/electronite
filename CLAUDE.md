@@ -135,18 +135,20 @@ Release binaries are **not** built with `e build`. They come from the standalone
 
 | Step | Command | Notes |
 |---|---|---|
-| Fetch | `./electronite-tools-3.sh get electronite-v44.9.3-beta` | ~20GB; hours on a cold git cache |
-| Build | `./electronite-tools-3.sh build x64` | `arm64` also valid; default `x64` |
-| Package | `./electronite-tools-3.sh release x64` | Must match the build target |
+| Fetch | `./electronite-tools-4.sh get electronite-v44.9.3-beta` | ~20GB; hours on a cold git cache |
+| Build | `./electronite-tools-4.sh build x64` | `arm64` also valid; default `x64` |
+| Package | `./electronite-tools-4.sh release x64` | Must match the build target |
 
 The distributable lands at `src/out/Release-<target>/dist.zip`. Rename for upload as `electronite-<version>-<platform>-<arch>.zip`, e.g. `electronite-v44.9.3-darwin-arm64.zip`. Cross-compiling across operating systems is not possible — each platform needs its own machine.
 
-Script variants:
+Script variants — these are versioned by copy, never edited in place. Changes go into a new numbered version so older ones stay usable against the branches they shipped with:
 
-- `electronite-tools-3.sh` / `.bat` — current, uses Chromium build tools
-- `electronite-tools-goma-3.*` — Goma-accelerated
-- `electronite-tools-2.*`, `electronite-tools.*` — older, kept for reference
-- `meta_builds/` — wrappers that chain every target and copy artifacts to S3
+- `electronite-tools-4.sh` / `.bat` — **current**, uses Chromium build tools
+- `electronite-tools-goma-4.*` — current, Goma-accelerated (drives `e` build-tools)
+- `electronite-tools-3.*`, `electronite-tools-2.*`, `electronite-tools.*` — older, kept for reference
+- `meta_builds/` — unversioned wrappers that chain every target and copy artifacts to S3; they always call the current version
+
+**v4 is required for this branch.** v3 and earlier apply `add_graphite_cpp_std_iterator.patch` by hand with `git apply`, which this branch no longer wants — the patch now lives in `patches/graphite2/` and is applied by the `patch_chromium` hook. Running v3 against this branch either skips the step (the `-3` scripts guard on the file existing, which is now gone) or fails outright (`electronite-tools-2.*` and `electronite-tools-goma-3.*` apply it unguarded). Conversely, v4 against a pre-graphite2 branch simply never applies the patch, because the target isn't in that branch's `patches/config.json`.
 
 Per-platform setup lives in `WindowsBuildNotes.md`, `MacBuildNotes.md`, `LinuxBuildNotes.md`.
 
@@ -184,44 +186,48 @@ The fork's entire delta:
 | graphite2 source dep | `DEPS` — `graphite_version`, `graphite_git`, `checkout_graphite`, `src/third_party/graphite/graphite2` | `gclient sync` |
 | `setup_graphite` hook | `DEPS` → `pre_deps_hooks` | `gclient sync` |
 | Chromium GN + OTS wiring | `patches/chromium/add_graphite.patch`, listed in `patches/chromium/.patches` | `patch_chromium` hook |
-| graphite2 C++ standards fixes | `docs/development/Electronite/add_graphite_cpp_std_iterator.patch` | **manually**, by the build scripts |
+| graphite2 C++ standards fixes | `patches/graphite2/add_graphite_cpp_std_iterator.patch`, listed in `patches/graphite2/.patches` | `patch_chromium` hook |
+| graphite2 patch target registration | `patches/config.json` | — |
 | Record of all of the above | `docs/development/Electronite/electronite.patch` | reference only |
 
 `graphite_version` is a commit SHA in `silnrsi/graphite`. A minor Graphite upgrade is just a hash bump in `DEPS`.
 
-### The two patches are applied differently
+### Both patches go through Electron's patch system
 
-`add_graphite.patch` goes through Electron's normal patch system — listed in `.patches`, applied to the **Chromium** repo by the `patch_chromium` hook.
+Despite its name, the `patch_chromium` hook runs `apply_all_patches.py` over **every** entry in `patches/config.json`, not just Chromium. Electronite registers one extra target:
 
-`add_graphite_cpp_std_iterator.patch` is deliberately **not** in `.patches`. It targets `third_party/graphite/graphite2/`, a separate git repo cloned by gclient, which Electron's patch system cannot own. The build scripts apply it by hand from `src/`:
-
-```bash
-cd ./src
-git apply --whitespace=warn ./electron/docs/development/Electronite/add_graphite_cpp_std_iterator.patch
+```json
+{ "patch_dir": "src/electron/patches/graphite2", "repo": "src/third_party/graphite/graphite2" }
 ```
 
-Its `index` blob hashes belong to the graphite2 object database, not Chromium's, so a 3-way fallback only works from inside that repo:
+Patch paths are relative to the **target repo root**, so the graphite2 patch uses `a/src/GlyphCache.cpp`, not `a/third_party/graphite/graphite2/src/GlyphCache.cpp`. Same convention as `patches/fontconfig/`.
 
-```bash
-cd src/third_party/graphite/graphite2
-git apply -3 -p4 ../../../electron/docs/development/Electronite/add_graphite_cpp_std_iterator.patch
+Never apply a patch into a gclient-managed repo with a bare `git apply` from a build script. `apply_all_patches.py` uses `git am`, which lands patches as **commits**; gclient resets a clean repo to the pinned revision and lets the hook re-apply. An uncommitted working-tree edit instead makes the next `gclient sync` fail with:
+
 ```
+src/third_party/graphite/graphite2 (ERROR)
+ You have uncommitted changes.
+```
+
+That error aborts the sync before the `hooks` section runs, so no patches are applied at all — which surfaces much later as the confusing `os_crypt/sync/features.gni` GN failure.
 
 ### Regenerating electronite.patch
 
-`electronite.patch` records the fork's delta against a pristine Electron checkout. Its hunk line numbers and `index` hashes go stale whenever `DEPS` or `.patches` changes upstream, so regenerate rather than hand-editing. With the Electronite changes present as uncommitted edits to `DEPS` and `patches/chromium/.patches`:
+`electronite.patch` records the fork's delta against a pristine Electron checkout. Its hunk line numbers and `index` hashes go stale whenever the underlying files change, so regenerate rather than hand-editing. Diff against the upstream Electron commit the branch was cut from (`<tag>^{commit}`, e.g. `v44.9.3`):
 
 ```bash
-git diff -U3 -- DEPS patches/chromium/.patches > /tmp/p1.diff
-git diff --no-index /dev/null patches/chromium/add_graphite.patch > /tmp/p2.diff
-cat /tmp/p1.diff /tmp/p2.diff > docs/development/Electronite/electronite.patch
+BASE=$(git rev-parse v44.9.3^{commit})
+git diff $BASE -- DEPS patches/chromium/.patches patches/chromium/add_graphite.patch \
+  patches/config.json patches/graphite2/ > docs/development/Electronite/electronite.patch
 ```
 
-Verify against pristine copies before trusting it — `add_graphite.patch` must be absent from the test tree, since the patch creates it:
+Verify against a pristine upstream tree before trusting it — files the patch *creates* must be absent from the test tree:
 
 ```bash
-mkdir -p /tmp/chk/patches/chromium
-cp DEPS /tmp/chk/DEPS && cp patches/chromium/.patches /tmp/chk/patches/chromium/
+rm -rf /tmp/chk && mkdir -p /tmp/chk/patches/chromium
+git show $BASE:DEPS > /tmp/chk/DEPS
+git show $BASE:patches/chromium/.patches > /tmp/chk/patches/chromium/.patches
+git show $BASE:patches/config.json > /tmp/chk/patches/config.json
 git -C /tmp/chk init -q
 git -C /tmp/chk apply --check -v $PWD/docs/development/Electronite/electronite.patch
 ```
@@ -380,7 +386,7 @@ npm run lint:api-history  # Validate API history YAML blocks in docs
 | `package.json` | Node.js dependencies and scripts |
 | `patches/chromium/add_graphite.patch` | Graphite wiring into Chromium's GN + OTS |
 | `docs/development/Electronite/electronite.patch` | Canonical record of the fork's delta |
-| `docs/development/Electronite/add_graphite_cpp_std_iterator.patch` | graphite2 C++ fixes, applied manually |
+| `patches/graphite2/add_graphite_cpp_std_iterator.patch` | graphite2 C++ standards fixes |
 | `docs/development/Electronite/electronite-tools-3.sh` / `.bat` | Release build driver |
 | `docs/development/Electronite/make_new_electronite.sh` | Cuts a new Electronite branch from an Electron tag |
 
@@ -487,4 +493,4 @@ Or just re-run the build — ninja is incremental and re-attempts only the faile
 ## Known Issues in Electronite Tooling
 
 - `MacBuildNotes.md` ("Used xcode 13.3.1") and `WindowsBuildNotes.md` ("VS 2019 … SDKs 10.0.19041.0 and 10.0.20348.0") record toolchains from far older Electronite versions and are wrong for this branch. See Toolchain Requirements.
-- `docs/development/Electronite/electronite.patch` is stale as of commit `4bc461a95a`: its `setup_graphite` line predates the `exist_ok=True` fix, and its `index` hashes no longer match `DEPS`. Regenerate it (see Graphite Integration).
+- `patches/config.json` is an upstream file, so the graphite2 entry must be re-added by hand at each release. `make_new_electronite.sh` deliberately does not copy it forward — re-apply it from `electronite.patch` instead.

@@ -22,7 +22,7 @@ if [ -d $BUILD_TARGET ]; then
     echo "Build Target already exists: $BUILD_TARGET"
 else
     echo "Doing Build $TARGET to $BUILD_TARGET"
-    ./electronite-tools-3.sh build $TARGET
+    ./electronite-tools-4.sh build $TARGET
     echo "Finished Build $TARGET to $BUILD_TARGET"
 fi
 
@@ -38,7 +38,7 @@ if [ -f $RELEASE_TARGET ]; then
     echo "Release Target already exists: $RELEASE_TARGET"
 else
     echo "Doing Release $TARGET"
-    ./electronite-tools-3.sh release $TARGET
+    ./electronite-tools-4.sh release $TARGET
 fi
 
 if [ -f $RELEASE_TARGET ]; then

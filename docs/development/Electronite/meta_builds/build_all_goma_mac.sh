@@ -22,7 +22,7 @@ echo "Building $BRANCH to: $DEST"
 
 if [ ! -d src ]; then
     echo "Getting sources from $BRANCH"
-    ./electronite-tools-goma-3.sh get $BRANCH
+    ./electronite-tools-goma-4.sh get $BRANCH
 fi
 
 TARGET=arm64

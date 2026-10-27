@@ -1,12 +1,20 @@
-From 0000000000000000000000000000000000000000 Thu Nov 3 15:48:39 2022
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Bruce <bruce.mclean@unfoldingword.org>
-Date: Thu Nov 3 2022 15:48:39 -0700
-Subject: [PATCH] fix graphite2 sources to be compatible with latest C++ standards -- patched for v44.9.3
+Date: Thu, 3 Nov 2022 15:48:39 -0700
+Subject: fix: make graphite2 sources compatible with current C++ standards
 
-diff --git a/third_party/graphite/graphite2/src/GlyphCache.cpp b/third_party/graphite/graphite2/src/GlyphCache.cpp
+graphite2 at the pinned revision does not compile under the C++ standard
+and libc++ configuration Chromium builds with:
+
+* _glat_iterator derives from std::iterator, which is deprecated and not
+  available here; declare the iterator traits explicitly instead.
+* Arithmetic combining Code::status() with the E_CODEFAILURE enumerator
+  requires an explicit cast to int.
+
+diff --git a/src/GlyphCache.cpp b/src/GlyphCache.cpp
 index 282bdc18..336de3f1 100644
---- a/third_party/graphite/graphite2/src/GlyphCache.cpp
-+++ b/third_party/graphite/graphite2/src/GlyphCache.cpp
+--- a/src/GlyphCache.cpp
++++ b/src/GlyphCache.cpp
 @@ -44,12 +44,18 @@ namespace
      // variable length structures.
  
@@ -27,10 +35,10 @@ index 282bdc18..336de3f1 100644
          _glat_iterator(const void * glat=0) : _e(reinterpret_cast<const byte *>(glat)), _v(_e+2*sizeof(W)), _n(0) {}
  
          _glat_iterator<W> & operator ++ () {
-diff --git a/third_party/graphite/graphite2/src/Pass.cpp b/third_party/graphite/graphite2/src/Pass.cpp
+diff --git a/src/Pass.cpp b/src/Pass.cpp
 index db31c22d..c744bcbc 100644
---- a/third_party/graphite/graphite2/src/Pass.cpp
-+++ b/third_party/graphite/graphite2/src/Pass.cpp
+--- a/src/Pass.cpp
++++ b/src/Pass.cpp
 @@ -194,7 +194,7 @@ bool Pass::readPass(const byte * const pass_start, size_t pass_length, size_t su
          m_cPConstraint = vm::Machine::Code(true, pcCode, pcCode + pass_constraint_len,
                                    precontext[0], be::peek<uint16>(sort_keys), *m_silf, face, PASS_TYPE_UNKNOWN);
