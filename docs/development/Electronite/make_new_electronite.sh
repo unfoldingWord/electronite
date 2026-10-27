@@ -25,6 +25,11 @@ mkdir -p ./temp_files/Electronite
 cp -R ./docs/development/Electronite ./temp_files
 cp patches/chromium/add_graphite.patch temp_files/add_graphite.patch
 
+# save Electronite CLAUDE.md - the new branch will carry upstream Electron's version
+if [ -f CLAUDE.md ]; then
+  cp CLAUDE.md temp_files/CLAUDE.md
+fi
+
 # Get all upstream tags
 git fetch --force --tags upstream
 
@@ -43,7 +48,7 @@ git checkout -b ${NEW_ELECTRON_VERSION}-electron
 if [ "${CREDS}" == "" ]; then
   git push --no-verify origin ${NEW_ELECTRON_VERSION}-electron
 else # use passed credentials
-  git push --no-verify  https://${CREDS}@github.com/unfoldingWord/electronite.git
+  git push --no-verify https://${CREDS}@github.com/unfoldingWord/electronite.git ${NEW_ELECTRON_VERSION}-electron
 fi
 
 # create a new Electronite branch from electron sources
@@ -52,11 +57,19 @@ git checkout -b electronite-${NEW_ELECTRON_VERSION}-beta
 # copy files from previous version
 mkdir -p ./docs/development/Electronite
 cp -R ./temp_files/Electronite ./docs/development
-cp temp_files/add_graphite.patch patches/chromium/add_graphite.patch 
+cp temp_files/add_graphite.patch patches/chromium/add_graphite.patch
+
+# keep previous Electronite CLAUDE.md as CLAUDE.oldElectronite.md to merge into the new one
+if [ -f temp_files/CLAUDE.md ]; then
+  cp temp_files/CLAUDE.md ./CLAUDE.oldElectronite.md
+fi
 
 # add new files to commit
 git add docs/development/Electronite/
 git add patches/chromium/add_graphite.patch
+if [ -f CLAUDE.oldElectronite.md ]; then
+  git add CLAUDE.oldElectronite.md
+fi
 rm -rf ./temp_files
 
 # get latest electron.d.ts
@@ -70,7 +83,6 @@ rm electron.d.ts electron.d.ts.new
 
 git commit --no-verify -m "Creating new electronite-${NEW_ELECTRON_VERSION}-beta"
 
-git push --no-verify origin electronite-v44.9.3-beta
 if [ "${CREDS}" == "" ]; then
   git push --no-verify origin electronite-${NEW_ELECTRON_VERSION}-beta
 else # use passed credentials
