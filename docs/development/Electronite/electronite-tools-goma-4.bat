@@ -26,6 +26,11 @@ rem set SCCACHE_BUCKET=electronjs-sccache
 rem set SCCACHE_TWO_TIER=true
 
 set DEPOT_TOOLS_WIN_TOOLCHAIN=0
+rem force UTF-8 console output from python - patch subjects can contain non-cp1252
+rem characters, which otherwise crash apply_all_patches.py mid-sync
+set PYTHONUTF8=1
+set PYTHONIOENCODING=utf-8
+set EXIT_CODE=0
 set NINJA_STATUS="[%%r processes, %%f/%%t @ %%o/s : %%es] "
 echo "GIT_CACHE_PATH=%GIT_CACHE_PATH%"
 echo "SCCACHE_BUCKET=%SCCACHE_BUCKET%"
@@ -100,7 +105,12 @@ rem pause
 rem echo "Config: %CONFIG_FILE%"
 echo "Checking out branch and Applying electronite patches"
 call  e sync
-  
+if %ERRORLEVEL% NEQ 0 (
+    echo "Sync failed - patches or hooks did not complete. See errors above."
+    set EXIT_CODE=1
+    goto End
+)
+
 echo "Identify checked out branch"
 cd src\electron
 call git --version
@@ -191,3 +201,4 @@ rem ####################
 cd %working_dir%
 
 echo "%date% - %time%" > end_time_%COMMAND%_%TARGET_%_%PASS%.txt
+exit /b %EXIT_CODE%
