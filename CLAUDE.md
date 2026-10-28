@@ -168,7 +168,15 @@ Compare the rendered fonts against the reference images on the page. The Padauk 
 ./make_new_electronite.sh v44.9.3 electronite-v23.3.10 [github-token]
 ```
 
-It stashes `docs/development/Electronite/` and `patches/chromium/add_graphite.patch` from the old branch, creates `<tag>-electron` and `electronite-<tag>-beta` from the upstream tag, restores those files, downloads `electron.d.ts` and rewrites `'electron` → `'electronite`, then commits and pushes.
+It stashes these from the old branch, creates `<tag>-electron` and `electronite-<tag>-beta` from the upstream tag, then restores them:
+
+- `docs/development/Electronite/`
+- `patches/chromium/add_graphite.patch`
+- `patches/graphite2/` (if present)
+- `README-Electronite.md` (if present) — restored under its own name, since upstream has no such file
+- `CLAUDE.md` (if present) — restored as `CLAUDE.oldElectronite.md`, because the new branch carries upstream's `CLAUDE.md`; merge the Electronite sections back in by hand
+
+Finally it downloads `electron.d.ts`, rewrites `'electron` → `'electronite`, then commits and pushes.
 
 What it does **not** do — these are manual:
 

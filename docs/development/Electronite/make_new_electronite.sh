@@ -36,6 +36,11 @@ if [ -f CLAUDE.md ]; then
   cp CLAUDE.md temp_files/CLAUDE.md
 fi
 
+# save README-Electronite.md - Electronite-only file, not in upstream Electron
+if [ -f README-Electronite.md ]; then
+  cp README-Electronite.md temp_files/README-Electronite.md
+fi
+
 # Get all upstream tags
 git fetch --force --tags upstream
 
@@ -77,6 +82,11 @@ if [ -f temp_files/CLAUDE.md ]; then
   cp temp_files/CLAUDE.md ./CLAUDE.oldElectronite.md
 fi
 
+# restore README-Electronite.md as-is - upstream has no file to conflict with
+if [ -f temp_files/README-Electronite.md ]; then
+  cp temp_files/README-Electronite.md ./README-Electronite.md
+fi
+
 # add new files to commit
 git add docs/development/Electronite/
 git add patches/chromium/add_graphite.patch
@@ -85,6 +95,9 @@ if [ -d patches/graphite2 ]; then
 fi
 if [ -f CLAUDE.oldElectronite.md ]; then
   git add CLAUDE.oldElectronite.md
+fi
+if [ -f README-Electronite.md ]; then
+  git add README-Electronite.md
 fi
 rm -rf ./temp_files
 
