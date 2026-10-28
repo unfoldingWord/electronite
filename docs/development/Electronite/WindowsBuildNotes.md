@@ -35,6 +35,15 @@ git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
 ### Build Electronite
 - first make sure you have downloaded the current version of electronite-tools-4.bat.  There may have been changes from other electronite versions.
 
+### Build All architectures
+- open command prompt, cd to the build directory, and initialize build configuration:
+```
+set Path=%cd%\depot_tools;%Path%
+.\build_all_win.bat electronite-v44.9.3-beta results\v44.9.3
+```
+
+the completed electronite builds will be `in results\v44.9.3` folder
+
 #### Build Intel x64
 - open command prompt, cd to the build directory, and initialize build configuration:
 ```
@@ -58,22 +67,8 @@ set Path=%cd%\depot_tools;%Path%
 
 - The release is at .\Build-Electron\src\out\Release-x64\dist.zip
 
-#### Build Intel x86 (32 bit)
-- if Electronite source already checked out, then skip to `Do build` step.
-
-- get the Electronite source code (this can take many hours the first time as the git cache is loaded), checkout the correct Electronite tag and get build sources
-```
-set Path=%cd%\depot_tools;%Path%
-.\electronite-tools-4.bat get electronite-v44.9.3-beta
-```
-
-- Do build (takes a long time)
-```
-.\electronite-tools-4.bat build x86; 
-.\electronite-tools-4.bat release x86; 
-```
-
-- The release is at .\Build-Electron\src\out\Release-x86\dist.zip
+#### Intel x86 (32 bit) - no longer built
+- Starting with Electron 44, x86 builds are not supported.  Upstream removed the `win-x86` PGO profile (electron/electron#53165) and no longer builds 32 bit Windows in CI, so `.\electronite-tools-4.bat build x86` fails in GN with `Could not read file ... pgo_profiles/win-x86.pgo.txt`.
 
 #### Build Intel arm64
 - if Electronite source already checked out, then skip to `Do build` step.

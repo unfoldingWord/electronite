@@ -1,8 +1,11 @@
 set BRANCH=%1
 set DEST=%2
 
-rem Meta Build script to get sources, and then build for x64, x86, and arm64 by calling build_target_win.bat
+rem Meta Build script to get sources, and then build for x64 and arm64 by calling build_target_win.bat
 rem     for each architecture.  The dist.zip files are stored at %DEST%
+rem
+rem x86 (32 bit) is no longer built - Electron 44 dropped the win-x86 PGO profile (upstream #53165) and no
+rem     longer builds 32 bit Windows in CI.
 rem
 rem Uses Chromium build tools.
 rem
@@ -43,22 +46,24 @@ if exist %DEST_FILE% (
     exit /b 10
 )
 
-set TARGET_=x86
-set DEST_FILE=%DEST%\%TARGET_%\dist.zip
+rem Build No longer supported for x86
 
-if exist %DEST_FILE% (
-    echo "Build %TARGET_% already exists: %DEST_FILE%"
-) else (
-    echo "Doing Build %TARGET_%"
-    call build_target_win.bat %TARGET_% %DEST%
-)
-
-if exist %DEST_FILE% (
-    echo "Distribution %TARGET_% built: %DEST_FILE%"
-) else (
-    echo "Distribution %TARGET_% failed: %DEST_FILE%"
-    exit /b 10
-)
+rem set TARGET_=x86
+rem set DEST_FILE=%DEST%\%TARGET_%\dist.zip
+rem 
+rem if exist %DEST_FILE% (
+rem     echo "Build %TARGET_% already exists: %DEST_FILE%"
+rem ) else (
+rem     echo "Doing Build %TARGET_%"
+rem     call build_target_win.bat %TARGET_% %DEST%
+rem )
+rem 
+rem if exist %DEST_FILE% (
+rem     echo "Distribution %TARGET_% built: %DEST_FILE%"
+rem ) else (
+rem     echo "Distribution %TARGET_% failed: %DEST_FILE%"
+rem     exit /b 10
+rem )
 
 set TARGET_=arm64
 set DEST_FILE=%DEST%\%TARGET_%\dist.zip

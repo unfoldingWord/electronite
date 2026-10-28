@@ -6,7 +6,7 @@
 - Make sure you have a valid python3.  Check by `python3 --version` .
 - make sure there is a default Python installed by `python --version`.  Should report 2.x.x, but If it reports 3.x.x it may work.
 
-- use node v16 (had build problems with latest v18)
+- use node v24 (claude can tell which version to use)
 - installed build-tools (https://github.com/electron/build-tools). First cd to build folder and run:
 ``` 
 git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
@@ -15,6 +15,15 @@ git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
 
 ### Build Electronite
 - first make sure you have downloaded the current version of electronite-tools-4.sh.  There may have been changes from other electronite versions.
+
+### Build All architectures
+- cd to the build directory and do:
+```
+export PATH=$(pwd)/depot_tools:$PATH
+./build_all_linux.sh electronite-v44.9.3-beta results/v44.9.3
+```
+
+the completed electronite builds will be in `results/v44.9.3` folder
 
 #### Build x64
 - get the Electronite source code for branch (this can take many hours the first time as the git cache is loaded). Open new terminal window, cd to the build folder and then run:
