@@ -118,3 +118,13 @@ else # use passed credentials
   git push --no-verify https://${CREDS}@github.com/unfoldingWord/electronite.git electronite-${NEW_ELECTRON_VERSION}-beta
 fi
 
+# show what Electronite content needs merging back into upstream's CLAUDE.md.
+# diff exits 1 when files differ, so `|| true` keeps `set -e` from failing the script
+if [ -f CLAUDE.oldElectronite.md ]; then
+  if [ -f CLAUDE.md ]; then
+    echo "Differences between CLAUDE.oldElectronite.md and upstream CLAUDE.md:"
+    opendiff CLAUDE.oldElectronite.md CLAUDE.md || true
+  else
+    echo "No upstream CLAUDE.md - CLAUDE.oldElectronite.md can be renamed to CLAUDE.md"
+  fi
+fi
