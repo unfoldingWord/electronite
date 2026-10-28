@@ -466,6 +466,18 @@ Same root cause. `patches/chromium/build_resolve_pgo_profiles_from_electron_stat
 
 `script/lib/git.py` echoes every `git am` line to the console, which Windows Python encodes as cp1252. A patch subject with a non-cp1252 character (e.g. the full-width colon `：` in `cherry-pick-69403d85b78b.patch`) crashes `apply_all_patches.py` partway through, the later hooks never run, and the build then fails on a missing `LASTCHANGE.committime`. The v4 `.bat` scripts set `PYTHONUTF8=1` / `PYTHONIOENCODING=utf-8` to prevent this; set them yourself when running `gclient sync` or `e sync` by hand.
 
+```bat
+:: cmd
+set PYTHONUTF8=1
+set PYTHONIOENCODING=utf-8
+```
+
+```powershell
+# PowerShell — `set X=Y` here creates a shell variable, not an environment variable, so child processes never see it
+$env:PYTHONUTF8 = "1"
+$env:PYTHONIOENCODING = "utf-8"
+```
+
 **Windows: `dbghelp.dll not found in …\Windows Kits\10\Debuggers\x64\`**
 
 The SDK "Debugging Tools for Windows" feature is missing. Settings → Apps → Windows Software Development Kit → Modify → Change → check Debugging Tools for Windows.

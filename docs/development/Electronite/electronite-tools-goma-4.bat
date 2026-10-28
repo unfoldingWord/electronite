@@ -6,8 +6,10 @@ rem Uses Electronite build tools.
 rem
 rem need to set paths before running this script.
 rem     `set Path=%HOMEDRIVE%%HOMEPATH%\.electron_build_tools\third_party\depot_tools;%HOMEDRIVE%%HOMEPATH%\.electron_build_tools\src;%Path%`
+rem     in PowerShell: `$env:Path = "$HOME\.electron_build_tools\third_party\depot_tools;$HOME\.electron_build_tools\src;$env:Path"`
 rem
 rem to troubleshoot build problems, do build logging by doing `set BUILD_EXTRAS=-vvvvv` before running
+rem     in PowerShell: `$env:BUILD_EXTRAS = "-vvvvv"`
 
 set FORK=unfoldingWord/electronite
 set ELECTRONITE_REPO=https://github.com/unfoldingWord/electronite

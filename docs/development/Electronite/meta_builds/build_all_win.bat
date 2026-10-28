@@ -8,10 +8,13 @@ rem Uses Chromium build tools.
 rem
 rem need to set paths before running this script. cd to the build directory and do:
 rem     `set Path=%cd%\depot_tools;%Path%`
+rem     in PowerShell: `$env:Path = "$PWD\depot_tools;$env:Path"`
 rem
 rem to troubleshoot build problems, do build logging by doing `set BUILD_EXTRAS=-vvvvv` before running
+rem     in PowerShell: `$env:BUILD_EXTRAS = "-vvvvv"`
 rem
 rem Example `build_all_win.bat electronite-v44.9.3-beta results\win\v44.9.3`
+rem     in PowerShell: `.\build_all_win.bat electronite-v44.9.3-beta results\win\v44.9.3`
 
 echo "Building %BRANCH% to: %DEST%"
 
