@@ -30,6 +30,8 @@ rem force UTF-8 console output from python - patch subjects can contain non-cp12
 rem characters, which otherwise crash apply_all_patches.py mid-sync
 set PYTHONUTF8=1
 set PYTHONIOENCODING=utf-8
+echo "PYTHONUTF8=%PYTHONUTF8%"
+echo "PYTHONIOENCODING=%PYTHONIOENCODING%"
 set EXIT_CODE=0
 set NINJA_STATUS="[%%r processes, %%f/%%t @ %%o/s : %%es] "
 echo "GIT_CACHE_PATH=%GIT_CACHE_PATH%"
