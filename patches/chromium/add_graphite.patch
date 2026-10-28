@@ -16,6 +16,24 @@ index d406e952273ab..8ab4495b0e7d8 100644
  
  assert(
  
+diff --git a/third_party/blink/renderer/platform/fonts/shaping/harfbuzz_shaper.cc b/third_party/blink/renderer/platform/fonts/shaping/harfbuzz_shaper.cc
+index 3f72576643f12..9155dced8aca1 100644
+--- a/third_party/blink/renderer/platform/fonts/shaping/harfbuzz_shaper.cc
++++ b/third_party/blink/renderer/platform/fonts/shaping/harfbuzz_shaper.cc
+@@ -71,8 +71,11 @@ namespace blink {
+ 
+ namespace {
+ 
+-const char* const harfrust_shaper_list[] = {"harfrust"};
+-const char* const ot_shaper_list[] = {"ot"};
++// Electronite: try Graphite first. HarfBuzz skips graphite2 for fonts without
++// a Silf table and falls through to the next shaper. The lists must be
++// nullptr-terminated now that they hold more than one entry.
++const char* const harfrust_shaper_list[] = {"graphite2", "harfrust", nullptr};
++const char* const ot_shaper_list[] = {"graphite2", "ot", nullptr};
+ 
+ inline const char* const* ShapingBackend() {
+   return RuntimeEnabledFeatures::HarfRustShapingEnabled() ? harfrust_shaper_list
 diff --git a/third_party/blink/renderer/platform/fonts/web_font_decoder.cc b/third_party/blink/renderer/platform/fonts/web_font_decoder.cc
 index ec06f8e649efe..2e90e8c2995d5 100644
 --- a/third_party/blink/renderer/platform/fonts/web_font_decoder.cc
