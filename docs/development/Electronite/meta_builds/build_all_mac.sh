@@ -23,7 +23,8 @@ if [ ! -d src ]; then
     ./electronite-tools-4.sh get $BRANCH
 fi
 
-TARGETS=("x64" "arm64")
+TARGETS=("arm64" "x64")
+#TARGETS=("x64" "arm64")
 
 for TARGET in "${TARGETS[@]}"; do
     DEST_FILE=$DEST/$TARGET/dist.zip
