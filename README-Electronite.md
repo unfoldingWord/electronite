@@ -23,11 +23,7 @@ The fork is deliberately thin - every addition has to be carried forward by hand
 
 To build Electronite see the documents: `docs/development/Electronite/Creating A New Electronite Release <version>.*` for the steps in building, testing, and making a release.
 
-Per-platform setup and build steps:
-
-- `docs/development/Electronite/MacBuildNotes.md`
-- `docs/development/Electronite/WindowsBuildNotes.md`
-- `docs/development/Electronite/LinuxBuildNotes.md`
+That document also covers per-platform machine setup. Older notes and deprecated scripts (including the Goma-accelerated builds, which no longer work outside Google and the Electron project) are kept for reference in `docs/development/Electronite/older_files/`.
 
 Release builds use `docs/development/Electronite/electronite-tools-4.sh` (or `.bat` on Windows), run from an empty build folder with 150GB+ free:
 

@@ -1,4 +1,10 @@
 ## Building Electronite on Windows
+
+### Warning - this document is old/deprecated
+- **Instead** use `docs/development/Electronite/Creating A New Electronite Release <version>.*` for the steps in building, testing, and making a release. 
+
+## Deprecated section:
+
 ### Setup on Clean Windows 10 VM
 - Configured my VM using these notes as a reference:
     - https://chromium.googlesource.com/chromium/src/+/main/docs/windows_build_instructions.md#visual-studio

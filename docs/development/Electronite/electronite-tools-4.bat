@@ -166,7 +166,7 @@ rem ####################
     echo Requirements:
     echo     - Node.js must be installed
     echo The source for electronite is at https://github.com/unfoldingWord-dev/electronite.
-    echo Usage: ./electronite-tools.sh ^<command^>
+    echo Usage: .\electronite-tools-4.bat ^<command^>
     echo where ^<command^> is one of:
     echo     get ^<ref^>     - fetches all of the code.
     echo                       Where ^<ref^> is a branch or tag.

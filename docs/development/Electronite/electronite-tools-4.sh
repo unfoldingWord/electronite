@@ -166,7 +166,7 @@ if [ "$COMMAND" == "" ]; then
 This is a set of tools for compiling Electronite.
 The source for Electronite is at https://github.com/unfoldingWord-dev/electronite.
 
-Usage: ./electronite-tools.sh <command>
+Usage: ./electronite-tools-4.sh <command>
 
 where <command> is one of:
 

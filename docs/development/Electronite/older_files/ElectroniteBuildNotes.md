@@ -1,5 +1,10 @@
 # Electronite Build Notes
 
+### Warning - this document is old/deprecated
+- **Instead** use `docs/development/Electronite/Creating A New Electronite Release <version>.*` for the steps in building, testing, and making a release. 
+
+## Deprecated section:
+
 Electronite is a version of Electron that is patched to support rendering [graphite](https://github.com/silnrsi/graphite) enabled fonts.
 
 Originally based on wiki notes for `electronite-v12.0.5` from: https://github.com/unfoldingWord/electronite/wiki

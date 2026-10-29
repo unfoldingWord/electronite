@@ -1,4 +1,10 @@
 ## Building Electronite on MacOS
+
+### Warning - this document is old/deprecated
+- **Instead** use `docs/development/Electronite/Creating A New Electronite Release <version>.*` for the steps in building, testing, and making a release. 
+
+## Deprecated section:
+
 ### Setup on MacOS Catalina VM
 - Configured my VM using these notes as a reference: [build-instructions-macos](../build-instructions-macos.md)
 - Make sure the VM has a lot of disk space - I was able to build with 120GB of storage configured.  But only had 13GB of space at end of build, so that may not be enough in the future.

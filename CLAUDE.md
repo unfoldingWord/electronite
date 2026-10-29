@@ -48,10 +48,11 @@ electron/                 # This repo (run `e` commands here)
 ├── spec/                # Test suite (1189+ TypeScript test files)
 ├── docs/                # API documentation and guides
 │   └── development/Electronite/   # Electronite build scripts, notes, patches
-│       ├── electronite-tools-3.*  # get / build / release driver scripts
+│       ├── electronite-tools-4.*  # get / build / release driver scripts
 │       ├── meta_builds/           # multi-target wrappers + S3 upload
 │       ├── electronite.patch      # canonical record of the fork's delta
-│       └── *BuildNotes.md         # per-platform setup notes
+│       ├── Creating A New Electronite Release <version>.odt/.pdf  # build + release guide
+│       └── older_files/           # deprecated scripts and notes, kept for reference
 ├── build/               # Build configuration
 ├── script/              # Build and automation scripts
 └── chromium_src/        # Chromium source overrides
@@ -144,13 +145,15 @@ The distributable lands at `src/out/Release-<target>/dist.zip`. Rename for uploa
 Script variants — these are versioned by copy, never edited in place. Changes go into a new numbered version so older ones stay usable against the branches they shipped with:
 
 - `electronite-tools-4.sh` / `.bat` — **current**, uses Chromium build tools
-- `electronite-tools-goma-4.*` — current, Goma-accelerated (drives `e` build-tools)
-- `electronite-tools-3.*`, `electronite-tools-2.*`, `electronite-tools.*` — older, kept for reference
-- `meta_builds/` — unversioned wrappers that chain every target and copy artifacts to S3; they always call the current version
+- `meta_builds/` — unversioned wrappers (`build_all_*`, `build_target_*`) that chain every target and copy artifacts to S3; they always call the current version
+- `older_files/` — deprecated, kept for reference only:
+  - `electronite-tools-3.*`, `electronite-tools-2.*`, `electronite-tools.*` — older driver versions
+  - All Goma variants (`electronite-tools-goma-*`, `build_all_goma_*`, `build_target_goma_*`). Goma no longer works outside Google and the Electron project, so don't use or update them.
+  - `*BuildNotes.md`, `step.*`, `install_electronite_tools*`, `set_build_env.bat`, `copy_all_to_s3.sh`
 
 **v4 is required for this branch.** v3 and earlier apply `add_graphite_cpp_std_iterator.patch` by hand with `git apply`, which this branch no longer wants — the patch now lives in `patches/graphite2/` and is applied by the `patch_chromium` hook. Running v3 against this branch either skips the step (the `-3` scripts guard on the file existing, which is now gone) or fails outright (`electronite-tools-2.*` and `electronite-tools-goma-3.*` apply it unguarded). Conversely, v4 against a pre-graphite2 branch simply never applies the patch, because the target isn't in that branch's `patches/config.json`.
 
-Per-platform setup lives in `WindowsBuildNotes.md`, `MacBuildNotes.md`, `LinuxBuildNotes.md`.
+Per-platform setup and the full build and release steps live in `docs/development/Electronite/Creating A New Electronite Release <version>.odt` (with a `.pdf` export). The per-platform `*BuildNotes.md` files in `older_files/` are out of date.
 
 **Verifying Graphite actually works** — a build that compiles proves nothing about rendering. Launch the binary, open DevTools, and run:
 
@@ -183,7 +186,7 @@ What it does **not** do — these are manual:
 1. Apply the `DEPS` and `patches/chromium/.patches` changes (see `electronite.patch`).
 2. Re-verify `add_graphite.patch` against the new Chromium. Context and line numbers drift every roll.
 3. Regenerate `docs/development/Electronite/electronite.patch` (see below).
-4. Update the toolchain versions recorded in the `*BuildNotes.md` files.
+4. Update the toolchain versions and script links in `Creating A New Electronite Release <version>.odt`, then re-export the `.pdf`.
 
 ## Graphite Integration
 
@@ -395,7 +398,8 @@ npm run lint:api-history  # Validate API history YAML blocks in docs
 | `patches/chromium/add_graphite.patch` | Graphite wiring into Chromium's GN + OTS |
 | `docs/development/Electronite/electronite.patch` | Canonical record of the fork's delta |
 | `patches/graphite2/add_graphite_cpp_std_iterator.patch` | graphite2 C++ standards fixes |
-| `docs/development/Electronite/electronite-tools-3.sh` / `.bat` | Release build driver |
+| `docs/development/Electronite/electronite-tools-4.sh` / `.bat` | Release build driver |
+| `docs/development/Electronite/Creating A New Electronite Release <version>.odt` | Build and release guide |
 | `docs/development/Electronite/make_new_electronite.sh` | Cuts a new Electronite branch from an Electron tag |
 
 ## Environment Variables
@@ -516,5 +520,6 @@ Or just re-run the build — ninja is incremental and re-attempts only the faile
 
 ## Known Issues in Electronite Tooling
 
-- `MacBuildNotes.md` ("Used xcode 13.3.1") and `WindowsBuildNotes.md` ("VS 2019 … SDKs 10.0.19041.0 and 10.0.20348.0") record toolchains from far older Electronite versions and are wrong for this branch. See Toolchain Requirements.
+- Everything in `docs/development/Electronite/older_files/` is out of date for this branch, e.g. `MacBuildNotes.md` ("Used xcode 13.3.1") and `WindowsBuildNotes.md` ("VS 2019 … SDKs 10.0.19041.0 and 10.0.20348.0"). See Toolchain Requirements. Their relative links to `../build-instructions-*.md` are also broken by the move.
+- Goma no longer works outside Google and the Electron project. The Goma scripts are in `older_files/` and should not be used or updated.
 - `patches/config.json` is an upstream file, so the graphite2 entry must be re-added by hand at each release. `make_new_electronite.sh` deliberately does not copy it forward — re-apply it from `electronite.patch` instead.

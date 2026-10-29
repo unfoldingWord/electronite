@@ -1,4 +1,10 @@
 ## Building Electronite on MacOS
+
+### Warning - this document is old/deprecated
+- **Instead** use `docs/development/Electronite/Creating A New Electronite Release <version>.*` for the steps in building, testing, and making a release. 
+
+## Deprecated section:
+
 ### Setup Build Environment on MacOS Monterey
 - Configured using these notes as a reference: [build-instructions-macos](../build-instructions-macos.md)
 - Can build on Monterey
