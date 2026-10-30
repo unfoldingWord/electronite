@@ -24,7 +24,18 @@ check_required_tool() {
 # Configure environment variables and paths
 export PATH=$PATH:~/.electron_build_tools/third_party/depot_tools:~/.electron_build_tools/src
 echo "PATH = $PATH"
-export GIT_CACHE_PATH=`pwd`/git_cache
+export GIT_CACHE_PATH=`pwd -P`/git_cache
+# git_cache may be a symbolic link to a folder on another drive - resolve it to the real folder.
+#   mkdir -p fails with "File exists" on a link whose target folder is missing, so create the target first
+if [ -L "${GIT_CACHE_PATH}" ]; then
+  LINK_TARGET=`readlink "${GIT_CACHE_PATH}"`
+  case "${LINK_TARGET}" in
+    /*) ;;
+    *) LINK_TARGET="`dirname "${GIT_CACHE_PATH}"`/${LINK_TARGET}" ;;
+  esac
+  mkdir -p "${LINK_TARGET}"
+  export GIT_CACHE_PATH=`cd "${GIT_CACHE_PATH}" && pwd -P`
+fi
 mkdir -p "${GIT_CACHE_PATH}"
 
 # Check if Node.js is installed
